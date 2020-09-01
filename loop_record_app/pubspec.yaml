@@ -1,5 +1,5 @@
 name: loop_record
-description: A new Flutter project.
+description: An audio recorder app.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -23,7 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  loop_record_app_core:
+    path: ../loop_record_app_core
+  loop_record_repository_impl:
+    path: ../loop_record_repository_impl
+  key_value_store_flutter:
+  shared_preferences:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -32,6 +37,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test:
+  mockito:
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
