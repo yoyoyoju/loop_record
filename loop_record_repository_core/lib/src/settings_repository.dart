@@ -5,5 +5,5 @@ import 'settings_entity.dart';
 abstract class SettingsRepository {
   Future<SettingsEntity> loadSettings();
 
-  Futere saveSettings(SettingsEntity settings);
+  Future<bool> saveSettings(SettingsEntity settings);
 }
