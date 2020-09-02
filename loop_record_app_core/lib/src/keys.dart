@@ -5,6 +5,9 @@ class LoopRecordKeys {
   // Home Screen
   static const homeScreen = Key('__homeScreen__');
 
+  // HowtoGuide
+  static const howtoGuide = Key('__howtoGuide__');
+
   // Extra Actions
   static const extraActionsButton = Key('__extraActionsButton__');
   static const goToSettings = Key('__goToSettings__');
