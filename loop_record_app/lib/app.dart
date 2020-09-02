@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
+import 'package:loop_record_app/screens/home_screen.dart';
+import 'package:loop_record_app/screens/loop_screen.dart';
+import 'package:loop_record_app/screens/settings_screen.dart';
 
 class RecordApp extends StatefulWidget {
   final SettingsRepository repository;
@@ -15,9 +19,18 @@ class _RecordAppState extends State<RecordApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'demo',
-      home: Scaffold(
-        body: Text('hi again and again'),
-      ),
+      theme: LoopRecordTheme.theme,
+      routes: {
+        LoopRecordRoutes.home: (context) {
+          return HomeScreen();
+        },
+        LoopRecordRoutes.loop: (context) {
+          return LoopScreen();
+        },
+        LoopRecordRoutes.settings: (context) {
+          return SettingsScreen();
+        }
+      },
     );
   }
 }
