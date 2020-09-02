@@ -7,7 +7,14 @@ import 'package:loop_record_app/app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
+
+  // - Show status bar
+  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+//  - Hide status bar
+//  SystemChrome.setEnabledSystemUIOverlays([]);
+//  - Change the status bar color
+//  SystemChrome.setSystemUIOverlayStyle(
+//      SystemUiOverlayStyle(statusBarColor: Colors.white));
 
   runApp(
     RecordApp(
