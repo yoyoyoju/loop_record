@@ -1,4 +1,4 @@
-name: loop_record
+name: loop_record_app
 description: An audio recorder app.
 
 # The following line prevents the package from being accidentally published to
