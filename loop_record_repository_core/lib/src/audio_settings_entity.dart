@@ -3,12 +3,12 @@
 /// Volumne (double)
 /// PlaybackRate (double)
 /// Loop the play or not
-class SettingsEntity {
+class AudioSettingsEntity {
   final bool toLoop;
   final double volumn;
   final double playbackRate;
 
-  SettingsEntity(this.toLoop, this.volumn, this.playbackRate);
+  AudioSettingsEntity(this.toLoop, this.volumn, this.playbackRate);
 
   @override
   int get hashCode => toLoop.hashCode ^ volumn.hashCode ^ playbackRate.hashCode;
@@ -16,7 +16,7 @@ class SettingsEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SettingsEntity &&
+      other is AudioSettingsEntity &&
           runtimeType == other.runtimeType &&
           toLoop == other.toLoop &&
           volumn == other.volumn &&
@@ -32,11 +32,11 @@ class SettingsEntity {
 
   @override
   String toString() {
-    return 'SettingsEntity{toLoop: $toLoop, volumn: $volumn, playbackRate: $playbackRate}';
+    return 'AudioSettingsEntity{toLoop: $toLoop, volumn: $volumn, playbackRate: $playbackRate}';
   }
 
-  static SettingsEntity fromJson(Map<String, Object> json) {
-    return SettingsEntity(
+  static AudioSettingsEntity fromJson(Map<String, Object> json) {
+    return AudioSettingsEntity(
       json['toLoop'] as bool,
       json['volumn'] as double,
       json['playbackRate'] as double,
