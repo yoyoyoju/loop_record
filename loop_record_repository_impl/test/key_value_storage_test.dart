@@ -9,27 +9,50 @@ import 'dart:convert';
 class MockKeyValueStore extends Mock implements KeyValueStore {}
 
 void main() {
-  group('KeyValueStorage', () {
+  group('KeyValueStorage for Audio', () {
     final store = MockKeyValueStore();
-    final settings = SettingsEntity(true, 1.0, 1.0);
-    final settingsJson =
-        '{"settings":{"toLoop":true,"volumn":1.0,"playbackRate":1.0}}';
+    final audioSettings = AudioSettingsEntity(true, 1.0, 1.0);
+    final audioSettingsJson =
+        '{"$AUDIO_SETTINGS_KEY":{"toLoop":true,"volumn":1.0,"playbackRate":1.0}}';
     final storage = KeyValueStorage('T', store);
 
     test('Should persist SettingsEntities to the store', () async {
       // Check the settingsJson is okay
       expect(
           json.encode({
-            'settings': settings.toJson(),
+            AUDIO_SETTINGS_KEY: audioSettings.toJson(),
           }),
-          settingsJson);
-      await storage.saveSettings(settings);
-      verify(store.setString('T', settingsJson));
+          audioSettingsJson);
+      await storage.saveAudioSettings(audioSettings);
+      verify(store.setString('T', audioSettingsJson));
     });
 
     test('Should load SettingsEntity from disk', () async {
-      when(store.getString('T')).thenReturn(settingsJson);
-      expect(await storage.loadSettings(), settings);
+      when(store.getString('T')).thenReturn(audioSettingsJson);
+      expect(await storage.loadAudioSettings(), audioSettings);
+    });
+  });
+
+  group('KeyValueStorage for Theme', () {
+    final store = MockKeyValueStore();
+    final themeSettings = ThemeSettingsEntity(false);
+    final themeSettingsJson = '{"$THEME_SETTINGS_KEY":{"isDarkMode":false}}';
+    final storage = KeyValueStorage('T', store);
+
+    test('Should persist SettingsEntities to the store', () async {
+      // Check the settingsJson is okay
+      expect(
+          json.encode({
+            THEME_SETTINGS_KEY: themeSettings.toJson(),
+          }),
+          themeSettingsJson);
+      await storage.saveThemeSettings(themeSettings);
+      verify(store.setString('T', themeSettingsJson));
+    });
+
+    test('Should load SettingsEntity from disk', () async {
+      when(store.getString('T')).thenReturn(themeSettingsJson);
+      expect(await storage.loadThemeSettings(), themeSettings);
     });
   });
 }
