@@ -6,7 +6,7 @@ import 'package:loop_record_app/screens/loop_screen.dart';
 import 'package:loop_record_app/screens/settings_screen.dart';
 
 class RecordApp extends StatefulWidget {
-  final AudioSettingsRepository repository;
+  final SettingsRepository repository;
 
   RecordApp({@required this.repository});
 

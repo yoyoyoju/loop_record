@@ -9,8 +9,7 @@ const THEME_SETTINGS_KEY = 'theme_settings';
 /// Loads and saves Settings using a provided KeyValueStore, which works
 /// on mobile and web. On mobile, it uses the SharedPreferences package,
 /// on web it uses window.localStorage.
-class KeyValueStorage
-    implements AudioSettingsRepository, ThemeSettingsRepository {
+class KeyValueStorage implements SettingsRepository {
   final String key;
   final KeyValueStore store;
   final JsonCodec codec;

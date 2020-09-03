@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
 import 'package:loop_record_app/widgets/howto_guide.dart';
-import 'package:loop_record_app/models.dart';
+import 'package:loop_record_app/models/enums.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen() : super(key: LoopRecordKeys.homeScreen);

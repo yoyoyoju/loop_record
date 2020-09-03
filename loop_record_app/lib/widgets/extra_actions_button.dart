@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loop_record_app/models.dart';
+import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 
 class ExtraActionsButton extends StatelessWidget {

@@ -4,3 +4,4 @@ export 'src/audio_settings_entity.dart';
 export 'src/audio_settings_repository.dart';
 export 'src/theme_settings_entity.dart';
 export 'src/theme_settings_repository.dart';
+export 'src/settings_repository.dart';
