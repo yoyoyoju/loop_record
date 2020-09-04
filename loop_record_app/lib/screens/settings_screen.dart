@@ -15,7 +15,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text("Settings"), //TODO use localization
       ),
-      body: Text("change settings"),
+      body: Switch(
+        value: true,
+        onChanged: (bool changed) {},
+      ),
     );
   }
 }
