@@ -47,4 +47,18 @@ class KeyValueStorage implements SettingsRepository {
       }),
     );
   }
+
+  @override
+  Future<SettingsEntity> loadSettings() async {
+    final audioSettingsEntity = loadAudioSettings();
+    final themeSettingsEntity = loadThemeSettings();
+    return SettingsEntity(await audioSettingsEntity, await themeSettingsEntity);
+  }
+
+  @override
+  Future<bool> saveSettings(SettingsEntity settings) async {
+    final saveAudio = saveAudioSettings(settings.audioSettingsEntity);
+    final saveTheme = saveThemeSettings(settings.themeSettingsEntity);
+    return (await saveAudio) && (await saveTheme);
+  }
 }

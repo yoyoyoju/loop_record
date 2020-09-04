@@ -55,4 +55,34 @@ void main() {
       expect(await storage.loadThemeSettings(), themeSettings);
     });
   });
+
+  group('KeyValueStorage', () {
+    final store = MockKeyValueStore();
+    final themeSettings = ThemeSettingsEntity(false);
+    final themeSettingsJson = '{"$THEME_SETTINGS_KEY":{"isDarkMode":false}}';
+    final audioSettings = AudioSettingsEntity(true, 1.0, 1.0);
+    final audioSettingsJson =
+        '{"$AUDIO_SETTINGS_KEY":{"toLoop":true,"volumn":1.0,"playbackRate":1.0}}';
+    final settings = SettingsEntity(audioSettings, themeSettings);
+    final settingsJson =
+        '{"$AUDIO_SETTINGS_KEY":{"toLoop":true,"volumn":1.0,"playbackRate":1.0},"$THEME_SETTINGS_KEY":{"isDarkMode":false}}';
+    final storage = KeyValueStorage('T', store);
+
+    test('Should persist SettingsEntities to the store', () async {
+      // Check the settingsJson is okay
+      expect(
+          json.encode({
+            THEME_SETTINGS_KEY: themeSettings.toJson(),
+          }),
+          themeSettingsJson);
+      await storage.saveSettings(settings);
+      verify(store.setString('T', themeSettingsJson));
+      verify(store.setString('T', audioSettingsJson));
+    });
+
+    test('Should load SettingsEntity from disk', () async {
+      when(store.getString('T')).thenReturn(themeSettingsJson);
+      expect(await storage.loadSettings(), settings);
+    });
+  });
 }
