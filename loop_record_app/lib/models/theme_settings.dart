@@ -6,7 +6,7 @@ import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 class ThemeSettings {
   final bool isDarkMode;
 
-  ThemeSettings(this.isDarkMode);
+  ThemeSettings([this.isDarkMode = false]);
 
   @override
   int get hashCode => isDarkMode.hashCode;
