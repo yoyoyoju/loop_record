@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:loop_record_app/models/audio_settings.dart';
+import 'package:loop_record_app/models/theme_settings.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 import 'package:loop_record_app/models/app_state.dart';
@@ -16,7 +18,7 @@ class RecordApp extends StatefulWidget {
 }
 
 class _RecordAppState extends State<RecordApp> {
-  AppState appState = AppState.getDefault();
+  AppState appState;
 
   @override
   void initState() {
@@ -24,6 +26,16 @@ class _RecordAppState extends State<RecordApp> {
 
     // Initialize appState
     // based on the saved settings from repository
+    widget.repository.loadThemeSettings().then((loadedSettings) {
+      setState(() {
+        appState = AppState(
+          audioSettings: null,
+          themeSettings: ThemeSettings.fromEntity(loadedSettings),
+        );
+      });
+    }).catchError((err) {
+      appState = AppState.getDefault();
+    });
   }
 
   @override
