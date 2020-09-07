@@ -13,6 +13,10 @@ class AppState {
         appSettings: AppSettings.getDefault(),
       );
 
+  factory AppState.fromEntity(settingsEntity) => AppState(
+        appSettings: AppSettings.fromEntity(settingsEntity),
+      );
+
   @override
   int get hashCode => appSettings.hashCode;
 
@@ -26,5 +30,11 @@ class AppState {
   @override
   String toString() {
     return 'AppState{appSettings: $appSettings}';
+  }
+
+  bool get isDarkMode => appSettings?.isDarkMode ?? false;
+
+  void updateSettings({isDarkMode}) {
+    appSettings.isDarkMode = isDarkMode ?? appSettings.isDarkMode;
   }
 }

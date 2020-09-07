@@ -1,10 +1,10 @@
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 
 class AppSettings {
-  final bool toLoop;
-  final double volumn;
-  final double playbackRate;
-  final bool isDarkMode;
+  bool toLoop;
+  double volumn;
+  double playbackRate;
+  bool isDarkMode;
 
   AppSettings(this.toLoop, this.volumn, this.playbackRate, this.isDarkMode);
 

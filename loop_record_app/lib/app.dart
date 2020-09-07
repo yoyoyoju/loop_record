@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 import 'package:loop_record_app/models/app_state.dart';
-import 'package:loop_record_app/models/app_settings.dart';
 import 'package:loop_record_app/screens/home_screen.dart';
 import 'package:loop_record_app/screens/loop_screen.dart';
 import 'package:loop_record_app/screens/settings_screen.dart';
@@ -27,12 +26,13 @@ class _RecordAppState extends State<RecordApp> {
     // based on the saved settings from repository
     widget.repository.loadSettings().then((loadedSettings) {
       setState(() {
-        appState = AppState(
-          appSettings: AppSettings.fromEntity(loadedSettings),
-        );
+        appState = AppState.fromEntity(loadedSettings);
       });
     }).catchError((err) {
-      appState = AppState.getDefault();
+      setState(() {
+        appState = AppState.getDefault();
+        appState.updateSettings(isDarkMode: ThemeMode.system == ThemeMode.dark);
+      });
     });
   }
 
@@ -41,6 +41,9 @@ class _RecordAppState extends State<RecordApp> {
     super.setState(fn);
 
     // Save appState into repository
+    widget.repository.saveSettings(
+      appState.appSettings.toEntity(),
+    );
   }
 
   @override
@@ -49,6 +52,7 @@ class _RecordAppState extends State<RecordApp> {
       title: 'demo',
       theme: LoopRecordTheme.theme,
       darkTheme: LoopRecordTheme.dark,
+      themeMode: getThemeMode(),
       routes: {
         LoopRecordRoutes.home: (context) {
           return HomeScreen();
@@ -57,9 +61,27 @@ class _RecordAppState extends State<RecordApp> {
           return LoopScreen();
         },
         LoopRecordRoutes.settings: (context) {
-          return SettingsScreen();
+          return SettingsScreen(
+            isDarkMode: appState.isDarkMode,
+            updateDarkMode: updateDarkMode,
+          );
         }
       },
     );
+  }
+
+  void updateSettings() {}
+
+  ThemeMode getThemeMode() {
+    if (appState?.isDarkMode ?? false) {
+      return ThemeMode.dark;
+    }
+    return ThemeMode.light;
+  }
+
+  void updateDarkMode(bool isDarkMode) {
+    setState(() {
+      appState.updateSettings(isDarkMode: isDarkMode);
+    });
   }
 }

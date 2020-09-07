@@ -6,7 +6,6 @@ import 'package:loop_record_app/models/enums.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen() : super(key: LoopRecordKeys.homeScreen);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
