@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:loop_record_app/models/audio_settings.dart';
-import 'package:loop_record_app/models/theme_settings.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 import 'package:loop_record_app/models/app_state.dart';
+import 'package:loop_record_app/models/app_settings.dart';
 import 'package:loop_record_app/screens/home_screen.dart';
 import 'package:loop_record_app/screens/loop_screen.dart';
 import 'package:loop_record_app/screens/settings_screen.dart';
@@ -26,11 +25,10 @@ class _RecordAppState extends State<RecordApp> {
 
     // Initialize appState
     // based on the saved settings from repository
-    widget.repository.loadThemeSettings().then((loadedSettings) {
+    widget.repository.loadSettings().then((loadedSettings) {
       setState(() {
         appState = AppState(
-          audioSettings: null,
-          themeSettings: ThemeSettings.fromEntity(loadedSettings),
+          appSettings: AppSettings.fromEntity(loadedSettings),
         );
       });
     }).catchError((err) {
