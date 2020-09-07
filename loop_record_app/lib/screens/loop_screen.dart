@@ -6,8 +6,7 @@ import 'package:loop_record_app/models/audio_unit.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
 import 'package:loop_record_app/widgets/recording_tab.dart';
 import 'package:loop_record_app/widgets/playing_tab.dart';
-//Temp
-import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:loop_record_app/widgets/audio_error_tab.dart';
 
 class LoopScreen extends StatefulWidget {
   final LocalFileSystem localFileSystem;
@@ -23,6 +22,7 @@ class LoopScreen extends StatefulWidget {
 class _LoopScreenState extends State<LoopScreen> {
   LoopTab activeTab = LoopTab.recording;
   AudioUnit audioUnit = AudioUnitImpl();
+  AudioUnitHealth _audioUnitHealth;
 
   void updateTab(LoopTab currentTab) {
     final nextTab =
@@ -47,10 +47,17 @@ class _LoopScreenState extends State<LoopScreen> {
           ),
         ],
       ),
-      body: activeTab == LoopTab.recording
-          ? RecordingTab(updateTab: updateTab)
-          : PlayingTab(updateTab: updateTab),
+      body: _currentBody(),
     );
+  }
+
+  Widget _currentBody() {
+    if (_audioUnitHealth != AudioUnitHealth.ok) {
+      return AudioErrorTab();
+    }
+    return activeTab == LoopTab.recording
+        ? RecordingTab(updateTab: updateTab)
+        : PlayingTab(updateTab: updateTab);
   }
 
   void _goToSettings() {
@@ -65,6 +72,10 @@ class _LoopScreenState extends State<LoopScreen> {
   }
 
   _init() async {
-    print(await audioUnit.init());
+    final result = await audioUnit.init();
+    print(result);
+    setState(() {
+      _audioUnitHealth = result;
+    });
   }
 }

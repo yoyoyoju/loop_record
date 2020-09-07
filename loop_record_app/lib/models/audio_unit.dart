@@ -7,16 +7,16 @@ class AudioUnitImpl implements AudioUnit {
   FlutterAudioRecorder _recorder;
 
   @override
-  Future<String> init() async {
+  Future<AudioUnitHealth> init() async {
     try {
       if (await FlutterAudioRecorder.hasPermissions) {
-        return null;
+        return AudioUnitHealth.ok;
       } else {
-        return "You must accept permissions"; // TODO Temp
+        return AudioUnitHealth.needPermissions;
       }
     } catch (e) {
       print(e);
-      return "Error occured";
+      return AudioUnitHealth.error;
     }
   }
 
@@ -52,7 +52,7 @@ class AudioUnitImpl implements AudioUnit {
 }
 
 abstract class AudioUnit {
-  Future<String> init();
+  Future<AudioUnitHealth> init();
 
   Future<bool> record();
 

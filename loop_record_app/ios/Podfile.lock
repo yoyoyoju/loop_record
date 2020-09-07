@@ -1,26 +1,44 @@
 PODS:
+  - audioplayers (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
+  - flutter_audio_recorder (0.5.4):
+    - Flutter
   - key_value_store_flutter (0.0.1):
+    - Flutter
+  - path_provider (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - Flutter (from `Flutter`)
+  - flutter_audio_recorder (from `.symlinks/plugins/flutter_audio_recorder/ios`)
   - key_value_store_flutter (from `.symlinks/plugins/key_value_store_flutter/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
 
 EXTERNAL SOURCES:
+  audioplayers:
+    :path: ".symlinks/plugins/audioplayers/ios"
   Flutter:
     :path: Flutter
+  flutter_audio_recorder:
+    :path: ".symlinks/plugins/flutter_audio_recorder/ios"
   key_value_store_flutter:
     :path: ".symlinks/plugins/key_value_store_flutter/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
 
 SPEC CHECKSUMS:
+  audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_audio_recorder: eb998d4e75e59b39d9e3ca1818a5e0f3a82f5836
   key_value_store_flutter: 17757389b11f4df6461c3a63b7a996062c74b13c
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
