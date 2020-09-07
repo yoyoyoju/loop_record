@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:file/local.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
@@ -6,7 +7,11 @@ import 'package:loop_record_app/widgets/recording_tab.dart';
 import 'package:loop_record_app/widgets/playing_tab.dart';
 
 class LoopScreen extends StatefulWidget {
-  LoopScreen() : super(key: LoopRecordKeys.loopScreen);
+  final LocalFileSystem localFileSystem;
+
+  LoopScreen({localFileSystem})
+      : this.localFileSystem = localFileSystem ?? LocalFileSystem(),
+        super(key: LoopRecordKeys.loopScreen);
 
   @override
   _LoopScreenState createState() => _LoopScreenState();
