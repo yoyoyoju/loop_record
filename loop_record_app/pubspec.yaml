@@ -29,6 +29,11 @@ dependencies:
     path: ../loop_record_repository_impl
   key_value_store_flutter:
   shared_preferences:
+  # For Audio
+  flutter_audio_recorder: ^0.5.5
+  audioplayers: ^0.15.1
+  path_provider: ^1.6.11
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
