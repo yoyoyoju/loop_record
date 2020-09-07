@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
+import 'package:loop_record_app/widgets/recording_tab.dart';
+import 'package:loop_record_app/widgets/playing_tab.dart';
 
 class LoopScreen extends StatefulWidget {
   LoopScreen() : super(key: LoopRecordKeys.loopScreen);
@@ -13,9 +15,11 @@ class LoopScreen extends StatefulWidget {
 class _LoopScreenState extends State<LoopScreen> {
   LoopTab activeTab = LoopTab.recording;
 
-  void _updateTab(LoopTab tab) {
+  void updateTab(LoopTab currentTab) {
+    final nextTab =
+        currentTab == LoopTab.recording ? LoopTab.playing : LoopTab.recording;
     setState(() {
-      activeTab = tab;
+      activeTab = nextTab;
     });
   }
 
@@ -23,7 +27,7 @@ class _LoopScreenState extends State<LoopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Loop Screen'), //TODO use localization
+        title: Text('Record and Play'), //TODO use localization
         actions: [
           ExtraActionsButton(
             onSelected: (action) {
@@ -34,8 +38,9 @@ class _LoopScreenState extends State<LoopScreen> {
           ),
         ],
       ),
-      body:
-          activeTab == LoopTab.recording ? Text("recording") : Text("playing"),
+      body: activeTab == LoopTab.recording
+          ? RecordingTab(updateTab: updateTab)
+          : PlayingTab(updateTab: updateTab),
     );
   }
 
