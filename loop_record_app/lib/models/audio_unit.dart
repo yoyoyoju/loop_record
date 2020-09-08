@@ -67,7 +67,9 @@ class AudioUnitImpl implements AudioUnit {
   @override
   Future<bool> record() async {
     // Stop Playing Audio
-    await _stopAudio();
+    if (_playerState == PlayerState.Playing) {
+      await _stopAudio();
+    }
     // Start Recording
     if (_currentStatus == RecordingStatus.Stopped) {
       await init();
@@ -83,6 +85,7 @@ class AudioUnitImpl implements AudioUnit {
       await _stopRecording();
     }
     // Start Playing audio
+    // TODO Check whether file exist?
     await _playAudio();
     return false;
   }
@@ -113,7 +116,19 @@ class AudioUnitImpl implements AudioUnit {
 
   @override
   void release() async {
+    stop();
     _audioPlayer?.release();
+  }
+
+  @override
+  Future<bool> stop() async {
+    try {
+      _stopAudio();
+      _stopRecording();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<int> _delete(String filepath) async {
@@ -131,6 +146,9 @@ class AudioUnitImpl implements AudioUnit {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
       _currentRecording = recording;
+      _currentStatus = _currentRecording.status;
+
+      /*
       const tick = const Duration(milliseconds: 50);
       Timer.periodic(tick, (Timer t) async {
         if (_currentStatus == RecordingStatus.Stopped) {
@@ -142,6 +160,7 @@ class AudioUnitImpl implements AudioUnit {
         _currentRecording = current;
         _currentStatus = _currentRecording.status;
       });
+      */
       return 1;
     } catch (e) {
       print(e);
@@ -150,12 +169,12 @@ class AudioUnitImpl implements AudioUnit {
   }
 
   Future<int> _resumeRecording() async {
-    await _recorder.resume();
+    await _recorder?.resume();
     return 1;
   }
 
   Future<int> _pauseRecording() async {
-    await _recorder.pause();
+    await _recorder?.pause();
     return 1;
   }
 
@@ -163,8 +182,12 @@ class AudioUnitImpl implements AudioUnit {
     var result = await _recorder?.stop();
     print("Stop recording: ${result.path}");
     print("Stop recording: ${result.duration}");
-    File file = localFileSystem.file(result.path);
-    print("File length: ${await file.length()}");
+    try {
+      File file = localFileSystem.file(result.path);
+      print("File length: ${await file.length()}");
+    } catch (e) {
+      print("File doesn't exist");
+    }
     _currentRecording = result;
     _currentStatus = _currentRecording.status;
     return 1;
@@ -182,16 +205,16 @@ class AudioUnitImpl implements AudioUnit {
   }
 
   Future<int> _stopAudio() async {
-    final result = await _audioPlayer.stop();
+    final result = await _audioPlayer?.stop() ?? -1;
     if (result == 1) {
       _playerState = PlayerState.Stopped;
     }
-    await _audioPlayer.release();
+    await _audioPlayer?.release();
     return result;
   }
 
   Future<int> _pauseAudio() async {
-    final result = await _audioPlayer.pause();
+    final result = await _audioPlayer?.pause() ?? -1;
     if (result == 1) {
       _playerState = PlayerState.Paused;
     }
@@ -199,7 +222,7 @@ class AudioUnitImpl implements AudioUnit {
   }
 
   Future<int> _resumeAudio() async {
-    final result = await _audioPlayer.resume();
+    final result = await _audioPlayer?.resume() ?? -1;
     if (result == 1) {
       _playerState = PlayerState.Playing;
     }
@@ -220,4 +243,6 @@ abstract class AudioUnit {
 
   // Add Stop for both
   void release();
+
+  Future<bool> stop();
 }
