@@ -21,7 +21,7 @@ class LoopScreen extends StatefulWidget {
 
 class _LoopScreenState extends State<LoopScreen> {
   LoopTab activeTab = LoopTab.recording;
-  AudioUnit audioUnit = AudioUnitImpl();
+  AudioUnit audioUnit;
   AudioUnitHealth _audioUnitHealth;
 
   void updateTab(LoopTab currentTab) {
@@ -72,6 +72,7 @@ class _LoopScreenState extends State<LoopScreen> {
   }
 
   _init() async {
+    audioUnit = AudioUnitImpl(localFileSystem: widget.localFileSystem);
     final result = await audioUnit.init();
     print(result);
     setState(() {

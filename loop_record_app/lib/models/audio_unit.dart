@@ -1,17 +1,28 @@
 import 'dart:async';
 import 'dart:io' as io;
 
+import 'package:file/file.dart';
+import 'package:file/local.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:path_provider/path_provider.dart';
+
+enum PlayerState {
+  Stopped,
+  Playing,
+  Paused,
+}
 
 class AudioUnitImpl implements AudioUnit {
   AudioPlayer _audioPlayer;
   FlutterAudioRecorder _recorder;
   Recording _currentRecording;
   RecordingStatus _currentStatus;
-//  PlayerState _playerState;
+  LocalFileSystem localFileSystem;
+  PlayerState _playerState;
+
+  AudioUnitImpl({this.localFileSystem});
 
   @override
   Future<AudioUnitHealth> init() async {
@@ -55,11 +66,19 @@ class AudioUnitImpl implements AudioUnit {
 
   @override
   Future<bool> record() async {
+    // Stop Playing Audio
+    await _stopAudio();
+    // Start Recording
+    await _startRecording();
     return false;
   }
 
   @override
   Future<bool> play() async {
+    // Stop Recording
+    await _stopRecording();
+    // Start Playing audio
+    await _playAudio();
     return false;
   }
 
@@ -67,8 +86,10 @@ class AudioUnitImpl implements AudioUnit {
   Future<bool> pause(AudioStatus status) async {
     if (status == AudioStatus.recording) {
       // pause recording
+      await _pauseRecording();
     } else {
       // pause playing
+      await _pauseAudio();
     }
     return false;
   }
@@ -77,8 +98,10 @@ class AudioUnitImpl implements AudioUnit {
   Future<bool> resume(AudioStatus status) async {
     if (status == AudioStatus.recording) {
       // resume recording
+      await _resumeRecording();
     } else {
       // resume playing
+      await _resumeAudio();
     }
     return false;
   }
@@ -93,7 +116,7 @@ class AudioUnitImpl implements AudioUnit {
     }
   }
 
-  Future<int> _start() async {
+  Future<int> _startRecording() async {
     try {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
@@ -114,6 +137,62 @@ class AudioUnitImpl implements AudioUnit {
       print(e);
       return 0;
     }
+  }
+
+  Future<int> _resumeRecording() async {
+    await _recorder.resume();
+    return 1;
+  }
+
+  Future<int> _pauseRecording() async {
+    await _recorder.pause();
+    return 1;
+  }
+
+  Future<int> _stopRecording() async {
+    var result = await _recorder.stop();
+    print("Stop recording: ${result.path}");
+    print("Stop recording: ${result.duration}");
+    File file = localFileSystem.file(result.path);
+    print("File length: ${await file.length()}");
+    _currentRecording = result;
+    _currentStatus = _currentRecording.status;
+  }
+
+  Future<int> _playAudio() async {
+    _audioPlayer = AudioPlayer();
+    await _audioPlayer.setReleaseMode(ReleaseMode.LOOP);
+    final result =
+        await _audioPlayer.play(_currentRecording.path, isLocal: true);
+    if (result == 1) {
+      _playerState = PlayerState.Playing;
+    }
+    return result;
+  }
+
+  Future<int> _stopAudio() async {
+    final result = await _audioPlayer.stop();
+    if (result == 1) {
+      _playerState = PlayerState.Stopped;
+    }
+    await _audioPlayer.release();
+    return result;
+  }
+
+  Future<int> _pauseAudio() async {
+    final result = await _audioPlayer.pause();
+    if (result == 1) {
+      _playerState = PlayerState.Paused;
+    }
+    return result;
+  }
+
+  Future<int> _resumeAudio() async {
+    final result = await _audioPlayer.resume();
+    if (result == 1) {
+      _playerState = PlayerState.Playing;
+    }
+    return result;
   }
 }
 
