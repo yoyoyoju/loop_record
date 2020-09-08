@@ -82,7 +82,28 @@ class AudioUnitImpl implements AudioUnit {
     return false;
   }
 
-  void _delete(String customPath) async {}
+  Future<int> _delete(String filepath) async {
+    try {
+      final file = io.File(filepath);
+      await file.delete();
+      return 1;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  Future<int> _start() async {
+    try {
+      await _recorder.start();
+      var recording = await _recorder.current(channel: 0);
+      _currentRecording = recording;
+      // TODO
+      return 1;
+    } catch (e) {
+      print(e);
+      return 0;
+    }
+  }
 }
 
 abstract class AudioUnit {
