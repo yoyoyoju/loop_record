@@ -15,8 +15,11 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  var args;
+
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context).settings.arguments as Map;
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"), //TODO use localization
@@ -36,8 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-    final args = ModalRoute.of(context).settings.arguments as Map;
-    args['callbackForPop']();
+//    args['callbackForPop']();
     super.dispose();
   }
 }

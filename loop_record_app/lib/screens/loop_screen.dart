@@ -19,7 +19,7 @@ class LoopScreen extends StatefulWidget {
   _LoopScreenState createState() => _LoopScreenState();
 }
 
-class _LoopScreenState extends State<LoopScreen> {
+class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   LoopTab activeTab = LoopTab.recording;
   AudioUnit audioUnit;
   AudioUnitHealth _audioUnitHealth;
@@ -52,11 +52,15 @@ class _LoopScreenState extends State<LoopScreen> {
   }
 
   Widget _currentBody() {
+    print("Get current Body for loop_screen -------------------------");
     if (_audioUnitHealth != AudioUnitHealth.ok) {
       return AudioErrorTab();
     }
+    // TODO:
+    // activate only when it is visible
     activeTab == LoopTab.recording ? audioUnit.record() : audioUnit.play();
 
+    print("activeTab = $activeTab -------------------------");
     return activeTab == LoopTab.recording
         ? RecordingTab(updateTab: updateTab)
         : PlayingTab(updateTab: updateTab);
@@ -64,19 +68,23 @@ class _LoopScreenState extends State<LoopScreen> {
 
   void _goToSettings() {
     //TODO pause playing and recording
-    Navigator.pushNamed(context, LoopRecordRoutes.settings,
-        arguments: <String, Function>{
-          'callbackForPop': resumeWhenPop,
-        });
+    // For now stop
+    print("-------------------------pause?");
+    audioUnit.stop();
+    Navigator.pushNamed(context, LoopRecordRoutes.settings)
+        .whenComplete(onResume);
   }
 
-  void resumeWhenPop() {
+  void onResume() {
     print("-------------------------resumed?");
   }
 
   @override
   void initState() {
+    print("Init for loop_screen -------------------------");
     super.initState();
+    // Temp Observer
+    WidgetsBinding.instance.addObserver(this);
     _init();
   }
 
@@ -91,7 +99,19 @@ class _LoopScreenState extends State<LoopScreen> {
 
   @override
   void dispose() {
+    // Temp Observer
+    print("Dispose for loop_screen -------------------------");
+    WidgetsBinding.instance.removeObserver(this);
     audioUnit.release();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      print("-------------------------------------resumed");
+    } else if (state == AppLifecycleState.paused) {
+      print("-------------------------------------paused");
+    }
   }
 }
