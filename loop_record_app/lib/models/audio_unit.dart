@@ -106,6 +106,11 @@ class AudioUnitImpl implements AudioUnit {
     return false;
   }
 
+  @override
+  void release() async {
+    _audioPlayer?.release();
+  }
+
   Future<int> _delete(String filepath) async {
     try {
       final file = io.File(filepath);
@@ -157,6 +162,7 @@ class AudioUnitImpl implements AudioUnit {
     print("File length: ${await file.length()}");
     _currentRecording = result;
     _currentStatus = _currentRecording.status;
+    return 1;
   }
 
   Future<int> _playAudio() async {
@@ -206,4 +212,6 @@ abstract class AudioUnit {
   Future<bool> pause(AudioStatus status);
 
   Future<bool> resume(AudioStatus status);
+
+  void release();
 }

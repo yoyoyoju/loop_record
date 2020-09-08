@@ -79,4 +79,10 @@ class _LoopScreenState extends State<LoopScreen> {
       _audioUnitHealth = result;
     });
   }
+
+  @override
+  void dispose() {
+    audioUnit.release();
+    super.dispose();
+  }
 }
