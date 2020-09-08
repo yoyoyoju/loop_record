@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final isDarkMode;
-  final updateDarkMode;
+  final bool isDarkMode;
+  final Function updateDarkMode;
 
   SettingsScreen({
     this.isDarkMode,
@@ -21,12 +21,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text("Settings"), //TODO use localization
       ),
-      body: Switch(
-        value: widget?.isDarkMode,
-        onChanged: (bool changed) {
-          widget.updateDarkMode(changed);
-        },
-      ),
+      body: Column(children: <Widget>[
+        Switch(
+          value: widget?.isDarkMode,
+          onChanged: (bool changed) {
+            widget.updateDarkMode(changed);
+          },
+        ),
+        Text(ModalRoute.of(context).settings.arguments?.toString() ?? "hi"),
+      ]),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    final args = ModalRoute.of(context).settings.arguments as Map;
+    args['callbackForPop']();
+    super.dispose();
   }
 }

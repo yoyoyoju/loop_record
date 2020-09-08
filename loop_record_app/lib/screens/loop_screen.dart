@@ -64,7 +64,14 @@ class _LoopScreenState extends State<LoopScreen> {
 
   void _goToSettings() {
     //TODO pause playing and recording
-    Navigator.pushNamed(context, LoopRecordRoutes.settings);
+    Navigator.pushNamed(context, LoopRecordRoutes.settings,
+        arguments: <String, Function>{
+          'callbackForPop': resumeWhenPop,
+        });
+  }
+
+  void resumeWhenPop() {
+    print("-------------------------resumed?");
   }
 
   @override
