@@ -55,6 +55,8 @@ class _LoopScreenState extends State<LoopScreen> {
     if (_audioUnitHealth != AudioUnitHealth.ok) {
       return AudioErrorTab();
     }
+    activeTab == LoopTab.recording ? audioUnit.record() : audioUnit.play();
+
     return activeTab == LoopTab.recording
         ? RecordingTab(updateTab: updateTab)
         : PlayingTab(updateTab: updateTab);

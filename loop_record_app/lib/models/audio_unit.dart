@@ -69,14 +69,19 @@ class AudioUnitImpl implements AudioUnit {
     // Stop Playing Audio
     await _stopAudio();
     // Start Recording
+    if (_currentStatus == RecordingStatus.Stopped) {
+      await init();
+    } // else RecordingStatus.Paused
     await _startRecording();
     return false;
   }
 
   @override
   Future<bool> play() async {
-    // Stop Recording
-    await _stopRecording();
+    // If Recording Stop Recording
+    if (_currentStatus == RecordingStatus.Recording) {
+      await _stopRecording();
+    }
     // Start Playing audio
     await _playAudio();
     return false;
@@ -155,7 +160,7 @@ class AudioUnitImpl implements AudioUnit {
   }
 
   Future<int> _stopRecording() async {
-    var result = await _recorder.stop();
+    var result = await _recorder?.stop();
     print("Stop recording: ${result.path}");
     print("Stop recording: ${result.duration}");
     File file = localFileSystem.file(result.path);
@@ -213,5 +218,6 @@ abstract class AudioUnit {
 
   Future<bool> resume(AudioStatus status);
 
+  // Add Stop for both
   void release();
 }
