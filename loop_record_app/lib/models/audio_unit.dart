@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:audioplayers/audioplayers.dart';
@@ -40,7 +41,7 @@ class AudioUnitImpl implements AudioUnit {
         // should be "Initialized", if all working fine
 
         _currentRecording = current;
-        _currentStatus = current.status;
+        _currentStatus = _currentRecording.status;
 
         return AudioUnitHealth.ok;
       } else {
@@ -97,7 +98,17 @@ class AudioUnitImpl implements AudioUnit {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
       _currentRecording = recording;
-      // TODO
+      const tick = const Duration(milliseconds: 50);
+      Timer.periodic(tick, (Timer t) async {
+        if (_currentStatus == RecordingStatus.Stopped) {
+          t.cancel();
+        }
+
+        var current = await _recorder.current(channel: 0);
+        // print(current.status);
+        _currentRecording = current;
+        _currentStatus = _currentRecording.status;
+      });
       return 1;
     } catch (e) {
       print(e);
