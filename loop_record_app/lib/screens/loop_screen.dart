@@ -58,6 +58,7 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
     }
     // TODO:
     // activate only when it is visible
+    // if not paused
     activeTab == LoopTab.recording ? audioUnit.record() : audioUnit.play();
 
     print("activeTab = $activeTab -------------------------");

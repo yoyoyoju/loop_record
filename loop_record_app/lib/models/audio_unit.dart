@@ -15,11 +15,16 @@ enum PlayerState {
 }
 
 class AudioUnitImpl implements AudioUnit {
+  // Player/Recorder
   AudioPlayer _audioPlayer;
   FlutterAudioRecorder _recorder;
+
+  // Recording File Info
   Recording _currentRecording;
-  RecordingStatus _currentStatus;
   LocalFileSystem localFileSystem;
+  // Status
+  RecordingStatus
+      _recorderStatus; // Unset, Initialized, Recording, Paused, Stopped
   PlayerState _playerState;
 
   AudioUnitImpl({this.localFileSystem});
@@ -52,7 +57,7 @@ class AudioUnitImpl implements AudioUnit {
         // should be "Initialized", if all working fine
 
         _currentRecording = current;
-        _currentStatus = _currentRecording.status;
+        _recorderStatus = _currentRecording.status;
 
         return AudioUnitHealth.ok;
       } else {
@@ -71,7 +76,7 @@ class AudioUnitImpl implements AudioUnit {
       await _stopAudio();
     }
     // Start Recording
-    if (_currentStatus == RecordingStatus.Stopped) {
+    if (_recorderStatus == RecordingStatus.Stopped) {
       await init();
     } // else RecordingStatus.Paused
     await _startRecording();
@@ -81,7 +86,7 @@ class AudioUnitImpl implements AudioUnit {
   @override
   Future<bool> play() async {
     // If Recording Stop Recording
-    if (_currentStatus == RecordingStatus.Recording) {
+    if (_recorderStatus == RecordingStatus.Recording) {
       await _stopRecording();
     }
     // Start Playing audio
@@ -116,6 +121,7 @@ class AudioUnitImpl implements AudioUnit {
 
   @override
   void release() async {
+    // TODO delete the file
     stop();
     _audioPlayer?.release();
   }
@@ -146,7 +152,7 @@ class AudioUnitImpl implements AudioUnit {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
       _currentRecording = recording;
-      _currentStatus = _currentRecording.status;
+      _recorderStatus = _currentRecording.status;
 
       /*
       const tick = const Duration(milliseconds: 50);
@@ -189,7 +195,7 @@ class AudioUnitImpl implements AudioUnit {
       print("File doesn't exist");
     }
     _currentRecording = result;
-    _currentStatus = _currentRecording.status;
+    _recorderStatus = _currentRecording.status;
     return 1;
   }
 
