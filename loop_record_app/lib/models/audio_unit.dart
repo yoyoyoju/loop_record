@@ -8,15 +8,27 @@ import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:path_provider/path_provider.dart';
 
-enum PlayerState {
-  Stopped,
-  Playing,
-  Paused,
+// Move the enum to models
+
+enum AudioUnitStatus {
+  RECORDING, // Recording, !playing or null
+  PLAYING, // playing, ! recording or null
+  RECORD_PAUSED, // one of them paused
+  PLAY_PAUSED,
+  IDLE, // not recording, not playing or null
+  ERROR
+}
+
+AudioUnitStatus getAudioUnitStatus(
+    RecordingStatus recorderStatus, AudioPlayerState playerStatus) {
+  // The args are set to null before init
+  //TODO
+  return null;
 }
 
 class AudioUnitImpl implements AudioUnit {
   // Player/Recorder
-  AudioPlayer _audioPlayer;
+  AudioPlayer _audioPlayer; // has state AudioPlayerState
   FlutterAudioRecorder _recorder;
 
   // Recording File Info
@@ -25,9 +37,22 @@ class AudioUnitImpl implements AudioUnit {
   // Status
   RecordingStatus
       _recorderStatus; // Unset, Initialized, Recording, Paused, Stopped
-  PlayerState _playerState;
+  AudioPlayerState _playerState; // STOPPED, PLAYING, PAUSED, COMPLETED
+  AudioUnitStatus _audioUnitStatus;
+
+  @override
+  AudioUnitStatus get status => _audioUnitStatus;
 
   AudioUnitImpl({this.localFileSystem});
+
+  void _updateStatus() {
+    // It mutate the statuses of audio Units
+    // based on
+    // _audioPlayer and _recorder
+    _recorderStatus = _currentRecording?.status ?? null;
+    _playerState = _audioPlayer?.state ?? null;
+    _audioUnitStatus = getAudioUnitStatus(_recorderStatus, _playerState);
+  }
 
   @override
   Future<AudioUnitHealth> init() async {
@@ -57,7 +82,7 @@ class AudioUnitImpl implements AudioUnit {
         // should be "Initialized", if all working fine
 
         _currentRecording = current;
-        _recorderStatus = _currentRecording.status;
+        _updateStatus();
 
         return AudioUnitHealth.ok;
       } else {
@@ -71,8 +96,11 @@ class AudioUnitImpl implements AudioUnit {
 
   @override
   Future<bool> record() async {
+    assert(_audioUnitStatus == AudioUnitStatus.PLAYING ||
+        _audioUnitStatus == AudioUnitStatus.IDLE);
+
     // Stop Playing Audio
-    if (_playerState == PlayerState.Playing) {
+    if (_playerState_D == PlayerState.Playing) {
       await _stopAudio();
     }
     // Start Recording
@@ -123,6 +151,7 @@ class AudioUnitImpl implements AudioUnit {
   void release() async {
     // TODO delete the file
     stop();
+    _delete(_currentRecording?.path);
     _audioPlayer?.release();
   }
 
@@ -152,21 +181,7 @@ class AudioUnitImpl implements AudioUnit {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
       _currentRecording = recording;
-      _recorderStatus = _currentRecording.status;
-
-      /*
-      const tick = const Duration(milliseconds: 50);
-      Timer.periodic(tick, (Timer t) async {
-        if (_currentStatus == RecordingStatus.Stopped) {
-          t.cancel();
-        }
-
-        var current = await _recorder.current(channel: 0);
-        // print(current.status);
-        _currentRecording = current;
-        _currentStatus = _currentRecording.status;
-      });
-      */
+      _updateStatus();
       return 1;
     } catch (e) {
       print(e);
@@ -176,11 +191,14 @@ class AudioUnitImpl implements AudioUnit {
 
   Future<int> _resumeRecording() async {
     await _recorder?.resume();
+    // TODO should I update the status manually??
+    _updateStatus();
     return 1;
   }
 
   Future<int> _pauseRecording() async {
     await _recorder?.pause();
+    _updateStatus();
     return 1;
   }
 
@@ -195,60 +213,59 @@ class AudioUnitImpl implements AudioUnit {
       print("File doesn't exist");
     }
     _currentRecording = result;
-    _recorderStatus = _currentRecording.status;
+    _updateStatus();
     return 1;
   }
 
+  // AudioPlayer
   Future<int> _playAudio() async {
     _audioPlayer = AudioPlayer();
     await _audioPlayer.setReleaseMode(ReleaseMode.LOOP);
     final result =
         await _audioPlayer.play(_currentRecording.path, isLocal: true);
-    if (result == 1) {
-      _playerState = PlayerState.Playing;
-    }
+    _playerState = _audioPlayer?.state;
+    _updateStatus();
     return result;
   }
 
   Future<int> _stopAudio() async {
     final result = await _audioPlayer?.stop() ?? -1;
-    if (result == 1) {
-      _playerState = PlayerState.Stopped;
-    }
+    _playerState = _audioPlayer?.state;
+    _updateStatus();
     await _audioPlayer?.release();
     return result;
   }
 
   Future<int> _pauseAudio() async {
     final result = await _audioPlayer?.pause() ?? -1;
-    if (result == 1) {
-      _playerState = PlayerState.Paused;
-    }
+    _playerState = _audioPlayer?.state;
+    _updateStatus();
     return result;
   }
 
   Future<int> _resumeAudio() async {
     final result = await _audioPlayer?.resume() ?? -1;
-    if (result == 1) {
-      _playerState = PlayerState.Playing;
-    }
+    _playerState = _audioPlayer?.state;
+    _updateStatus();
     return result;
   }
 }
 
 abstract class AudioUnit {
+  AudioUnitStatus get status;
+
   Future<AudioUnitHealth> init();
 
   Future<bool> record();
 
   Future<bool> play();
 
-  Future<bool> pause(AudioStatus status);
+  Future<bool> pause();
 
-  Future<bool> resume(AudioStatus status);
+  Future<bool> resume();
+
+  Future<bool> stop();
 
   // Add Stop for both
   void release();
-
-  Future<bool> stop();
 }
