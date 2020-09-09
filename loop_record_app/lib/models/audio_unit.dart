@@ -106,8 +106,6 @@ class AudioUnitImpl implements AudioUnit {
 
         await _recorder.initialized;
         // after initialization
-        var current = await _recorder.current(channel: 0);
-        print(current);
         // should be "Initialized", if all working fine
 
         await _updateStatus();
@@ -200,7 +198,7 @@ class AudioUnitImpl implements AudioUnit {
 
   @override
   void release() async {
-    stop();
+    await stop();
     _delete(_currentRecording?.path);
     _audioPlayer?.release();
   }
@@ -208,8 +206,13 @@ class AudioUnitImpl implements AudioUnit {
   @override
   Future<bool> stop() async {
     try {
-      _stopAudio();
-      _stopRecording();
+      if (_audioUnitStatus == AudioUnitStatus.PLAYING ||
+          _audioUnitStatus == AudioUnitStatus.PLAY_PAUSED) {
+        await _stopAudio();
+      } else if (_audioUnitStatus == AudioUnitStatus.RECORDING ||
+          _audioUnitStatus == AudioUnitStatus.RECORD_PAUSED) {
+        await _stopRecording();
+      }
       return true;
     } catch (e) {
       return false;
@@ -218,8 +221,11 @@ class AudioUnitImpl implements AudioUnit {
 
   Future<int> _delete(String filepath) async {
     try {
+      // TODO: handle io FileNotFoundException
       final file = io.File(filepath);
-      await file.delete();
+      if (file.existsSync()) {
+        await file.delete();
+      }
       return 1;
     } catch (e) {
       return 0;
@@ -229,7 +235,6 @@ class AudioUnitImpl implements AudioUnit {
   Future<int> _startRecording() async {
     try {
       await _recorder.start();
-      var recording = await _recorder.current(channel: 0);
       await _updateStatus();
       return 1;
     } catch (e) {
@@ -240,7 +245,6 @@ class AudioUnitImpl implements AudioUnit {
 
   Future<int> _resumeRecording() async {
     await _recorder?.resume();
-    // TODO should I update the status manually??
     await _updateStatus();
     return 1;
   }
@@ -248,23 +252,6 @@ class AudioUnitImpl implements AudioUnit {
   Future<int> _pauseRecording() async {
     await _recorder?.pause();
     await _updateStatus();
-    print("currentRecording status");
-    print(_currentRecording.status);
-    print("recorder:");
-    print(_recorderStatus);
-    print("audioplayer:");
-    print(_playerState);
-    print("supposedly RECORD_PAUSED");
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
-    print(_audioUnitStatus);
     return 1;
   }
 

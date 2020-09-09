@@ -52,48 +52,31 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   }
 
   Widget _currentBody() {
-    print("Get current Body for loop_screen -------------------------");
     if (_audioUnitHealth != AudioUnitHealth.ok) {
       return AudioErrorTab();
     }
-    // TODO:
-    // activate only when it is visible
-    // if not paused
-    print("_currentBody: ${audioUnit.status}");
     if (!audioUnit.isPaused) {
       activeTab == LoopTab.recording ? audioUnit.record() : audioUnit.play();
     }
-    print("_currentBody: ${audioUnit.status}");
 
-    print("activeTab = $activeTab -------------------------");
     return activeTab == LoopTab.recording
         ? RecordingTab(updateTab: updateTab)
         : PlayingTab(updateTab: updateTab);
   }
 
   void _goToSettings() {
-    //TODO pause playing and recording
-    // For now stop
-    print("goToSettings: ${audioUnit.status}");
-    print("-------------------------pause?");
     audioUnit.pause();
     Navigator.pushNamed(context, LoopRecordRoutes.settings)
         .whenComplete(onResume);
-    print("goToSettings: ${audioUnit.status}");
   }
 
   void onResume() {
-    print("-------------------------resumed?");
-    print("onResume: ${audioUnit.status}");
     audioUnit.resume();
-    print("onResume: ${audioUnit.status}");
   }
 
   @override
   void initState() {
-    print("Init for loop_screen -------------------------");
     super.initState();
-    // Temp Observer
     WidgetsBinding.instance.addObserver(this);
     _init();
   }
@@ -101,32 +84,24 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   _init() async {
     audioUnit = AudioUnitImpl(localFileSystem: widget.localFileSystem);
     final result = await audioUnit.init();
-    print(result);
     setState(() {
       _audioUnitHealth = result;
     });
-    print("_init: ${audioUnit.status}");
   }
 
   @override
   void dispose() {
-    // Temp Observer
-    print("Dispose for loop_screen -------------------------");
-    print("dispose: ${audioUnit.status}");
     WidgetsBinding.instance.removeObserver(this);
     audioUnit.release();
     super.dispose();
-    print("dispose: ${audioUnit.status}");
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       audioUnit.resume();
-      print("-------------------------------------resumed");
     } else if (state == AppLifecycleState.paused) {
       audioUnit.pause();
-      print("-------------------------------------paused");
     }
   }
 }
