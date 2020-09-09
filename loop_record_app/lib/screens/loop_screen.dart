@@ -122,8 +122,10 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      audioUnit.resume();
       print("-------------------------------------resumed");
     } else if (state == AppLifecycleState.paused) {
+      audioUnit.pause();
       print("-------------------------------------paused");
     }
   }
