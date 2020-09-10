@@ -1,5 +1,11 @@
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 
+enum AudioPlayingMode {
+  LOOP,
+  STOP, // STOP and RELEASE (set releaseMode to RELEASE)
+  RECORD_ON_COMPLETE,
+}
+
 class AppSettings {
   bool toLoop;
   double volumn;
