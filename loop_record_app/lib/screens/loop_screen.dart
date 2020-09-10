@@ -78,10 +78,11 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _init();
+    _initAudio();
   }
 
-  _init() async {
+  _initAudio() async {
+    // Pass callback whenComplete
     audioUnit = AudioUnitImpl(localFileSystem: widget.localFileSystem);
     final result = await audioUnit.init();
     setState(() {
