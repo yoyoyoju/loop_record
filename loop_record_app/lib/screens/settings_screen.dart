@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loop_record_app/models/audio_settings.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 
@@ -6,11 +7,13 @@ class SettingsScreen extends StatefulWidget {
   final bool isDarkMode;
   final Function updateDarkMode;
   final Function updateAudioSettings;
+  final AudioSettings audioSettings;
 
   SettingsScreen({
     this.isDarkMode,
     @required this.updateDarkMode,
     @required this.updateAudioSettings, //TODO use it
+    @required this.audioSettings,
   }) : super(key: LoopRecordKeys.settingsScreen);
 
   @override
@@ -35,7 +38,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             ExampleSlider(),
-            AudioPlayModeRadio(widget.updateAudioSettings),
+            AudioPlayModeRadio(
+              update: widget.updateAudioSettings,
+              currentMode: widget.audioSettings.audioPlayMode,
+            ),
           ],
         ),
       ),
@@ -46,7 +52,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 class DarkModeSwitch extends StatelessWidget {
   final bool value;
   final Function onChanged;
-
   DarkModeSwitch({
     @required this.value,
     @required this.onChanged,
@@ -80,8 +85,9 @@ class ExampleSlider extends StatelessWidget {
 
 class AudioPlayModeRadio extends StatefulWidget {
   final Function update;
+  final AudioPlayMode currentMode;
 
-  AudioPlayModeRadio(this.update);
+  AudioPlayModeRadio({@required this.update, this.currentMode});
 
   @override
   _AudioPlayModeRadioState createState() => _AudioPlayModeRadioState();
@@ -89,7 +95,13 @@ class AudioPlayModeRadio extends StatefulWidget {
 
 class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
   // TODO: get value from repo
-  AudioPlayMode _audioPlayMode = AudioPlayMode.LOOP;
+  AudioPlayMode _audioPlayMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayMode = widget.currentMode ?? AudioPlayMode.LOOP;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,12 +169,10 @@ class PlayingModeOption extends StatelessWidget {
 class RowSettingItem extends StatelessWidget {
   final String textLabel;
   final Widget settingWidget;
-
   RowSettingItem({
     @required this.textLabel,
     @required this.settingWidget,
   });
-
   @override
   Widget build(BuildContext context) {
     return Row(

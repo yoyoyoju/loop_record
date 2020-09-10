@@ -68,6 +68,7 @@ class _RecordAppState extends State<RecordApp> {
             isDarkMode: appState.isDarkMode,
             updateDarkMode: updateDarkMode,
             updateAudioSettings: updateAudioSettings,
+            audioSettings: appState.audioSettings,
           );
         }
       },
