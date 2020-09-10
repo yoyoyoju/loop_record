@@ -38,6 +38,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             ExampleSlider(),
+            VolumnSlider(
+              update: widget.updateAudioSettings,
+              initialVolumn: widget.audioSettings.volumn,
+            ),
             AudioPlayModeRadio(
               update: widget.updateAudioSettings,
               currentMode: widget.audioSettings.audioPlayMode,
@@ -72,12 +76,53 @@ class ExampleSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RowSettingItem(
-      textLabel: "Slider Example",
+      textLabel: "Volumn",
       settingWidget: Slider(
         min: 0.1,
         max: 2.0,
         onChanged: (double value) {},
         value: 1.0,
+      ),
+    );
+  }
+}
+
+class VolumnSlider extends StatefulWidget {
+  final double initialVolumn;
+  final Function update;
+
+  VolumnSlider({
+    @required this.initialVolumn,
+    @required this.update,
+  });
+
+  @override
+  _VolumnSliderState createState() => _VolumnSliderState();
+}
+
+class _VolumnSliderState extends State<VolumnSlider> {
+  double _volumn;
+
+  @override
+  initState() {
+    super.initState();
+    _volumn = widget.initialVolumn;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RowSettingItem(
+      textLabel: "Volumn",
+      settingWidget: Slider(
+        min: 0.1,
+        max: 2.0,
+        onChanged: (double value) {
+          setState(() {
+            _volumn = value;
+            widget.update(volumn: value);
+          });
+        },
+        value: _volumn,
       ),
     );
   }
@@ -94,7 +139,6 @@ class AudioPlayModeRadio extends StatefulWidget {
 }
 
 class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
-  // TODO: get value from repo
   AudioPlayMode _audioPlayMode;
 
   @override
