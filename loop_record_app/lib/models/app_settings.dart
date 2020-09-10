@@ -1,24 +1,21 @@
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
-
-enum AudioPlayingMode {
-  LOOP,
-  STOP, // STOP and RELEASE (set releaseMode to RELEASE)
-  RECORD_ON_COMPLETE,
-}
+import 'package:loop_record_app/models/enums.dart';
 
 class AppSettings {
-  bool toLoop;
+  AudioPlayMode audioPlayMode;
   double volumn;
   double playbackRate;
   bool isDarkMode;
 
-  AppSettings(this.toLoop, this.volumn, this.playbackRate, this.isDarkMode);
+  AppSettings(
+      this.audioPlayMode, this.volumn, this.playbackRate, this.isDarkMode);
 
-  factory AppSettings.getDefault() => AppSettings(true, 1.0, 1.0, false);
+  factory AppSettings.getDefault() =>
+      AppSettings(AudioPlayMode.LOOP, 1.0, 1.0, false);
 
   @override
   int get hashCode =>
-      toLoop.hashCode ^
+      audioPlayMode.hashCode ^
       volumn.hashCode ^
       playbackRate.hashCode ^
       isDarkMode.hashCode;
@@ -26,24 +23,27 @@ class AppSettings {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SettingsEntity &&
+      other is AppSettings &&
           runtimeType == other.runtimeType &&
-          toLoop == other.toLoop &&
+          audioPlayMode == other.audioPlayMode &&
           volumn == other.volumn &&
           playbackRate == other.playbackRate &&
           isDarkMode == other.isDarkMode;
 
   @override
   String toString() {
-    return 'AppSettings{toLoop: $toLoop, volumn: $volumn, playbackRate: $playbackRate, isDarkMode: $isDarkMode}';
+    return 'AppSettings{audioPlayMode: $audioPlayMode, volumn: $volumn, playbackRate: $playbackRate, isDarkMode: $isDarkMode}';
   }
 
   SettingsEntity toEntity() {
-    return SettingsEntity(toLoop, volumn, playbackRate, isDarkMode);
+    // TODO Update Entity accordingly
+    return SettingsEntity(audioPlayMode == AudioPlayMode.LOOP ? true : false,
+        volumn, playbackRate, isDarkMode);
   }
 
+  // TODO Update Entity accordingly
   static AppSettings fromEntity(SettingsEntity entity) {
-    return AppSettings(
-        entity.toLoop, entity.volumn, entity.playbackRate, entity.isDarkMode);
+    return AppSettings(entity.toLoop ? AudioPlayMode.LOOP : AudioPlayMode.STOP,
+        entity.volumn, entity.playbackRate, entity.isDarkMode);
   }
 }
