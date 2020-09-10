@@ -90,7 +90,9 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
 
   _initAudio() async {
     // Pass callback whenComplete
-    audioUnit = AudioUnitImpl(localFileSystem: widget.localFileSystem);
+    audioUnit = AudioUnitImpl(
+        localFileSystem: widget.localFileSystem,
+        audioSettings: widget.audioSettings);
     final result = await audioUnit.init();
     setState(() {
       _audioUnitHealth = result;

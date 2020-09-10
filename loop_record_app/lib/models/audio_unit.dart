@@ -5,6 +5,7 @@ import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:loop_record_app/models/audio_settings.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -46,7 +47,6 @@ AudioUnitStatus getAudioUnitStatus(
           recorderStatus == RecordingStatus.Initialized)) {
     return AudioUnitStatus.IDLE;
   }
-
   return AudioUnitStatus.ERROR;
 }
 
@@ -64,6 +64,9 @@ class AudioUnitImpl implements AudioUnit {
   AudioPlayerState _playerState; // STOPPED, PLAYING, PAUSED, COMPLETED
   AudioUnitStatus _audioUnitStatus = AudioUnitStatus.IDLE;
 
+  // AudioSettings
+  AudioSettings audioSettings;
+
   @override
   AudioUnitStatus get status => _audioUnitStatus;
   @override
@@ -71,7 +74,7 @@ class AudioUnitImpl implements AudioUnit {
       _audioUnitStatus == AudioUnitStatus.RECORD_PAUSED ||
       _audioUnitStatus == AudioUnitStatus.PLAY_PAUSED;
 
-  AudioUnitImpl({this.localFileSystem});
+  AudioUnitImpl({this.localFileSystem, this.audioSettings});
 
   Future _updateStatus() async {
     // It mutate the statuses of audio Units
