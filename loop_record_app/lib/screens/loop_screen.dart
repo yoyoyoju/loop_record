@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file/local.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
+import 'package:loop_record_app/models/app_state.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app/models/audio_unit.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
@@ -10,11 +11,12 @@ import 'package:loop_record_app/widgets/audio_error_tab.dart';
 
 class LoopScreen extends StatefulWidget {
   final LocalFileSystem localFileSystem;
+  final AppState appState;
 
-  // TODO: Get the initial audio Settings
-  // Use it in the init
-  LoopScreen({localFileSystem})
-      : this.localFileSystem = localFileSystem ?? LocalFileSystem(),
+  LoopScreen({
+    localFileSystem,
+    @required this.appState,
+  })  : this.localFileSystem = localFileSystem ?? LocalFileSystem(),
         super(key: LoopRecordKeys.loopScreen);
 
   @override

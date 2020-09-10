@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -8,8 +9,8 @@ class SettingsScreen extends StatefulWidget {
 
   SettingsScreen({
     this.isDarkMode,
-    this.updateDarkMode,
-    this.updateAudioSettings, //TODO use it
+    @required this.updateDarkMode,
+    @required this.updateAudioSettings, //TODO use it
   }) : super(key: LoopRecordKeys.settingsScreen);
 
   @override
@@ -34,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
             ExampleSlider(),
-            ExampleRadio(),
+            AudioPlayModeRadio(widget.updateAudioSettings),
           ],
         ),
       ),
@@ -77,15 +78,17 @@ class ExampleSlider extends StatelessWidget {
   }
 }
 
-enum Example { one, two, three }
+class AudioPlayModeRadio extends StatefulWidget {
+  final Function update;
 
-class ExampleRadio extends StatefulWidget {
+  AudioPlayModeRadio(this.update);
+
   @override
-  _ExampleRadioState createState() => _ExampleRadioState();
+  _AudioPlayModeRadioState createState() => _AudioPlayModeRadioState();
 }
 
-class _ExampleRadioState extends State<ExampleRadio> {
-  Example _example = Example.one;
+class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
+  AudioPlayMode _audioPlayMode = AudioPlayMode.LOOP;
 
   @override
   Widget build(BuildContext context) {
@@ -95,27 +98,30 @@ class _ExampleRadioState extends State<ExampleRadio> {
         child: Column(
           children: <Widget>[
             PlayingModeOption(
-                value: Example.one,
-                groupValue: _example,
-                onChanged: (Example value) {
+                value: AudioPlayMode.LOOP,
+                groupValue: _audioPlayMode,
+                onChanged: (AudioPlayMode value) {
                   setState(() {
-                    _example = value;
+                    _audioPlayMode = value;
+                    widget.update(audioPlayMode: value);
                   });
                 }),
             PlayingModeOption(
-                value: Example.three,
-                groupValue: _example,
-                onChanged: (Example value) {
+                value: AudioPlayMode.STOP,
+                groupValue: _audioPlayMode,
+                onChanged: (AudioPlayMode value) {
                   setState(() {
-                    _example = value;
+                    _audioPlayMode = value;
+                    widget.update(audioPlayMode: value);
                   });
                 }),
             PlayingModeOption(
-                value: Example.two,
-                groupValue: _example,
-                onChanged: (Example value) {
+                value: AudioPlayMode.RECORD_ON_COMPLETE,
+                groupValue: _audioPlayMode,
+                onChanged: (AudioPlayMode value) {
                   setState(() {
-                    _example = value;
+                    _audioPlayMode = value;
+                    widget.update(audioPlayMode: value);
                   });
                 }),
           ],
@@ -126,8 +132,8 @@ class _ExampleRadioState extends State<ExampleRadio> {
 }
 
 class PlayingModeOption extends StatelessWidget {
-  final Example value;
-  final Example groupValue;
+  final AudioPlayMode value;
+  final AudioPlayMode groupValue;
   final Function onChanged;
 
   PlayingModeOption({
@@ -138,8 +144,8 @@ class PlayingModeOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioListTile<Example>(
-      title: Text(value.toString().split('.')[1]),
+    return RadioListTile<AudioPlayMode>(
+      title: Text(value.description),
       value: value,
       groupValue: groupValue,
       onChanged: onChanged,

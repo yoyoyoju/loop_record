@@ -59,7 +59,9 @@ class _RecordAppState extends State<RecordApp> {
           return HomeScreen();
         },
         LoopRecordRoutes.loop: (context) {
-          return LoopScreen();
+          return LoopScreen(
+            appState: appState,
+          );
         },
         LoopRecordRoutes.settings: (context) {
           return SettingsScreen(

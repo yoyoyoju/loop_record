@@ -7,8 +7,8 @@ class AppState {
   AppSettings appSettings;
 
   AppState({
-    @required this.appSettings,
-  });
+    @required appSettings,
+  }) : this.appSettings = appSettings ?? AppSettings.getDefault();
 
   factory AppState.getDefault() => AppState(
         appSettings: AppSettings.getDefault(),
@@ -33,7 +33,10 @@ class AppState {
     return 'AppState{appSettings: $appSettings}';
   }
 
-  bool get isDarkMode => appSettings?.isDarkMode ?? false;
+  bool get isDarkMode => appSettings.isDarkMode ?? false;
+  double get volumn => appSettings.volumn ?? 1.0;
+  double get playbackRate => appSettings.playbackRate ?? 1.0;
+  AudioPlayMode get audioPlayMode => appSettings.audioPlayMode;
 
   void updateSettings({
     bool isDarkMode,
@@ -46,6 +49,8 @@ class AppState {
     double playbackRate,
     AudioPlayMode audioPlayMode,
   }) {
+    print("appSettings: $appSettings");
+    print("volumn: ${appSettings.volumn}");
     appSettings.volumn = volumn ?? appSettings.volumn;
     appSettings.playbackRate = playbackRate ?? appSettings.playbackRate;
     appSettings.audioPlayMode = audioPlayMode ?? appSettings.audioPlayMode;

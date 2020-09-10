@@ -57,7 +57,9 @@ class AppSettings {
         entity.volumn, entity.playbackRate, entity.isDarkMode);
   }
 
-  double _checkInput(double input, {double max = 2.0, double min = 0.1}) {
+  double _checkInput(double input,
+      {double max = 2.0, double min = 0.1, double defaultValue = 1.0}) {
+    if (input == null) return defaultValue;
     var checked;
     if (input > max) {
       checked = max;
