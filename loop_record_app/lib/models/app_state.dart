@@ -1,10 +1,13 @@
-import 'package:meta/meta.dart';
 import 'package:loop_record_app/models/app_settings.dart';
+import 'package:meta/meta.dart';
+import 'package:loop_record_app/models/audio_settings.dart';
 import 'package:loop_record_app/models/enums.dart';
 
 /// Store the app state
 class AppState {
   AppSettings appSettings;
+
+  AudioSettings get audioSettings => appSettings.audioSettings;
 
   AppState({
     @required appSettings,

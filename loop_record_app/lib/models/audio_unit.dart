@@ -165,6 +165,7 @@ class AudioUnitImpl implements AudioUnit {
         break;
       case AudioUnitStatus.RECORD_PAUSED:
       case AudioUnitStatus.PLAY_PAUSED:
+        break;
       case AudioUnitStatus.IDLE:
       case AudioUnitStatus.ERROR:
         throw 'shoul be playing or recording';

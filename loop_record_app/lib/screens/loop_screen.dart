@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file/local.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
-import 'package:loop_record_app/models/app_state.dart';
+import 'package:loop_record_app/models/audio_settings.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app/models/audio_unit.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
@@ -11,11 +11,11 @@ import 'package:loop_record_app/widgets/audio_error_tab.dart';
 
 class LoopScreen extends StatefulWidget {
   final LocalFileSystem localFileSystem;
-  final AppState appState;
+  final AudioSettings audioSettings;
 
   LoopScreen({
     localFileSystem,
-    @required this.appState,
+    @required this.audioSettings,
   })  : this.localFileSystem = localFileSystem ?? LocalFileSystem(),
         super(key: LoopRecordKeys.loopScreen);
 
@@ -40,7 +40,8 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Record and Play'), //TODO use localization
+        title: Text(
+            '${widget.audioSettings.audioPlayMode.description}'), //TODO use localization
         actions: [
           ExtraActionsButton(
             onSelected: (action) {

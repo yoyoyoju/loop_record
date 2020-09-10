@@ -88,6 +88,7 @@ class AudioPlayModeRadio extends StatefulWidget {
 }
 
 class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
+  // TODO: get value from repo
   AudioPlayMode _audioPlayMode = AudioPlayMode.LOOP;
 
   @override

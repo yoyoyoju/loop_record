@@ -60,7 +60,7 @@ class _RecordAppState extends State<RecordApp> {
         },
         LoopRecordRoutes.loop: (context) {
           return LoopScreen(
-            appState: appState,
+            audioSettings: appState.audioSettings,
           );
         },
         LoopRecordRoutes.settings: (context) {
