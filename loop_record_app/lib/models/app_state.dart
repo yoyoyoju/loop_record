@@ -34,9 +34,6 @@ class AppState {
   }
 
   bool get isDarkMode => appSettings.isDarkMode ?? false;
-  double get volumn => appSettings.volumn ?? 1.0;
-  double get playbackRate => appSettings.playbackRate ?? 1.0;
-  AudioPlayMode get audioPlayMode => appSettings.audioPlayMode;
 
   void updateSettings({
     bool isDarkMode,
@@ -49,11 +46,7 @@ class AppState {
     double playbackRate,
     AudioPlayMode audioPlayMode,
   }) {
-    print("appSettings: $appSettings");
-    print("volumn: ${appSettings.volumn}");
-    appSettings.volumn = volumn ?? appSettings.volumn;
-    appSettings.playbackRate = playbackRate ?? appSettings.playbackRate;
-    appSettings.audioPlayMode = audioPlayMode ?? appSettings.audioPlayMode;
+    appSettings.updateAudioSettings(volumn, playbackRate, audioPlayMode);
   }
 }
 
@@ -62,7 +55,7 @@ main() {
   AppState state = AppState.getDefault();
   print(state);
 
-  state.updateAudioSettings(volumn: 3.0);
+  state.updateAudioSettings(volumn: 3.0, audioPlayMode: AudioPlayMode.STOP);
   print(state);
 }
 */

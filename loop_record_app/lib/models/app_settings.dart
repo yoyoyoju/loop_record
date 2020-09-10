@@ -1,5 +1,6 @@
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 import 'package:loop_record_app/models/audio_settings.dart';
+import 'package:loop_record_app/models/enums.dart';
 
 class AppSettings {
   AudioSettings audioSettings;
@@ -41,6 +42,16 @@ class AppSettings {
       entity.playbackRate,
     );
     return AppSettings(audioSettings, entity.isDarkMode);
+  }
+
+  void updateAudioSettings(
+    double volumn,
+    double playbackRate,
+    AudioPlayMode audioPlayMode,
+  ) {
+    audioSettings.volumn = volumn ?? audioSettings.volumn;
+    audioSettings.playbackRate = playbackRate ?? audioSettings.playbackRate;
+    audioSettings.audioPlayMode = audioPlayMode ?? audioSettings.audioPlayMode;
   }
 }
 
