@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_repository_core/loop_record_repository_core.dart';
 import 'package:loop_record_app/models/app_state.dart';
+import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app/screens/home_screen.dart';
 import 'package:loop_record_app/screens/loop_screen.dart';
 import 'package:loop_record_app/screens/settings_screen.dart';
@@ -64,13 +65,27 @@ class _RecordAppState extends State<RecordApp> {
           return SettingsScreen(
             isDarkMode: appState.isDarkMode,
             updateDarkMode: updateDarkMode,
+            updateAudioSettings: updateAudioSettings,
           );
         }
       },
     );
   }
 
-  void updateSettings() {}
+  void updateAudioSettings({
+    double volumn,
+    double playbackRate,
+    AudioPlayMode audioPlayMode,
+  }) {
+    setState(() {
+      // It saves the settings into repository
+      appState.updateAudioSettings(
+        volumn: volumn,
+        playbackRate: playbackRate,
+        audioPlayMode: audioPlayMode,
+      );
+    });
+  }
 
   ThemeMode getThemeMode() {
     if (appState?.isDarkMode ?? false) {

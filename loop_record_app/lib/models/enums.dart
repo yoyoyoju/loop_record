@@ -23,7 +23,3 @@ extension AudioPlayModeExtension on AudioPlayMode {
     return "error";
   }
 }
-
-main() {
-  print(AudioPlayMode.LOOP.description);
-}

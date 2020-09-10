@@ -11,6 +11,8 @@ import 'package:loop_record_app/widgets/audio_error_tab.dart';
 class LoopScreen extends StatefulWidget {
   final LocalFileSystem localFileSystem;
 
+  // TODO: Get the initial audio Settings
+  // Use it in the init
   LoopScreen({localFileSystem})
       : this.localFileSystem = localFileSystem ?? LocalFileSystem(),
         super(key: LoopRecordKeys.loopScreen);
@@ -68,6 +70,8 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
     audioUnit.pause();
     Navigator.pushNamed(context, LoopRecordRoutes.settings)
         .whenComplete(onResume);
+    // TODO should update the audio settings here?
+    // OR use observer?
   }
 
   void onResume() {

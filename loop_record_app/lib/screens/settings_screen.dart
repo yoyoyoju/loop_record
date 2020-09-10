@@ -4,10 +4,12 @@ import 'package:loop_record_app_core/loop_record_app_core.dart';
 class SettingsScreen extends StatefulWidget {
   final bool isDarkMode;
   final Function updateDarkMode;
+  final Function updateAudioSettings;
 
   SettingsScreen({
     this.isDarkMode,
     this.updateDarkMode,
+    this.updateAudioSettings, //TODO use it
   }) : super(key: LoopRecordKeys.settingsScreen);
 
   @override
