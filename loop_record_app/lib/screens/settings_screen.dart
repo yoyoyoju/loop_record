@@ -15,11 +15,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  var args;
-
   @override
   Widget build(BuildContext context) {
-    args = ModalRoute.of(context).settings.arguments as Map;
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"), //TODO use localization
@@ -31,15 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             widget.updateDarkMode(changed);
           },
         ),
-        Text(ModalRoute.of(context).settings.arguments?.toString() ?? "hi"),
       ]),
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-//    args['callbackForPop']();
-    super.dispose();
   }
 }
