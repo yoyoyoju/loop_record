@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:loop_record_app/models/app_settings.dart';
+import 'package:loop_record_app/models/enums.dart';
 
 /// Store the app state
 class AppState {
@@ -34,7 +35,29 @@ class AppState {
 
   bool get isDarkMode => appSettings?.isDarkMode ?? false;
 
-  void updateSettings({isDarkMode}) {
+  void updateSettings({
+    bool isDarkMode,
+  }) {
     appSettings.isDarkMode = isDarkMode ?? appSettings.isDarkMode;
   }
+
+  void updateAudioSettings({
+    double volumn,
+    double playbackRate,
+    AudioPlayMode audioPlayMode,
+  }) {
+    appSettings.volumn = volumn ?? appSettings.volumn;
+    appSettings.playbackRate = playbackRate ?? appSettings.playbackRate;
+    appSettings.audioPlayMode = audioPlayMode ?? appSettings.audioPlayMode;
+  }
 }
+
+/*
+main() {
+  AppState state = AppState.getDefault();
+  print(state);
+
+  state.updateAudioSettings(volumn: 3.0);
+  print(state);
+}
+*/
