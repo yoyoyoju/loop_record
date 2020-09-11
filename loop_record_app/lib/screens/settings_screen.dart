@@ -27,26 +27,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text("Settings"), //TODO use localization
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            DarkModeSwitch(
-              value: widget?.isDarkMode,
-              onChanged: (bool changed) {
-                widget.updateDarkMode(changed);
-              },
-            ),
-            PlayRateSlider(
-              update: widget.updateAudioSettings,
-              initialPlayRate: widget.audioSettings.playbackRate,
-            ),
-            AudioPlayModeRadio(
-              update: widget.updateAudioSettings,
-              currentMode: widget.audioSettings.audioPlayMode,
-            ),
-          ],
-        ),
+      body: ListView(
+        children: <Widget>[
+          DarkModeSwitch(
+            value: widget?.isDarkMode,
+            onChanged: (bool changed) {
+              widget.updateDarkMode(changed);
+            },
+          ),
+          PlayRateSlider(
+            update: widget.updateAudioSettings,
+            initialPlayRate: widget.audioSettings.playbackRate,
+          ),
+          AudioPlayModeRadio(
+            update: widget.updateAudioSettings,
+            currentMode: widget.audioSettings.audioPlayMode,
+          ),
+        ],
       ),
     );
   }
@@ -253,6 +250,7 @@ class RowSettingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           child: Text(textLabel),
