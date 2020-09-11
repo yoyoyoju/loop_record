@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:loop_record_app/strings.dart';
 import 'package:loop_record_app/models/audio_settings.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app_core/loop_record_app_core.dart';
+import 'package:loop_record_app/widgets/settings_widgets.dart';
 
 class SettingsScreen extends StatefulWidget {
   final bool isDarkMode;
@@ -25,9 +27,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"), //TODO use localization
+        title: Text(Strings.SETTINGS_TITLE),
       ),
       body: ListView(
+        padding: EdgeInsets.all(16.0),
         children: <Widget>[
           DarkModeSwitch(
             value: widget?.isDarkMode,
@@ -35,124 +38,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               widget.updateDarkMode(changed);
             },
           ),
+          SizedBox(height: 50.0),
           PlayRateSlider(
             update: widget.updateAudioSettings,
             initialPlayRate: widget.audioSettings.playbackRate,
           ),
+          SizedBox(height: 50.0),
           AudioPlayModeRadio(
             update: widget.updateAudioSettings,
             currentMode: widget.audioSettings.audioPlayMode,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DarkModeSwitch extends StatelessWidget {
-  final bool value;
-  final Function onChanged;
-  DarkModeSwitch({
-    @required this.value,
-    @required this.onChanged,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return RowSettingItem(
-      textLabel: "Dark Mode!",
-      settingWidget: Switch(
-        value: value,
-        onChanged: onChanged,
-      ),
-    );
-  }
-}
-
-class PlayRateSlider extends StatefulWidget {
-  final double initialPlayRate;
-  final Function update;
-
-  PlayRateSlider({
-    @required this.initialPlayRate,
-    @required this.update,
-  });
-
-  @override
-  _PlayRateSliderState createState() => _PlayRateSliderState();
-}
-
-class _PlayRateSliderState extends State<PlayRateSlider> {
-  double _playRate;
-
-  @override
-  initState() {
-    super.initState();
-    _playRate = widget.initialPlayRate;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        RowSettingItem(
-          textLabel: "Audio Playback Rate",
-          settingWidget: Slider(
-            min: 0.1,
-            max: 2.0,
-            onChanged: (double value) {
-              setState(() {
-                _playRate = value;
-                widget.update(playbackRate: value);
-              });
-            },
-            value: _playRate,
-          ),
-        ),
-        RaisedButton(
-            child: Text("Set default playback rate"),
-            onPressed: () => setState(() {
-                  _playRate = 1.0;
-                  widget.update(playbackRate: 1.0);
-                })),
-      ],
-    );
-  }
-}
-
-class VolumnSlider extends StatefulWidget {
-  final double initialVolumn;
-  final Function update;
-  VolumnSlider({
-    @required this.initialVolumn,
-    @required this.update,
-  });
-  @override
-  _VolumnSliderState createState() => _VolumnSliderState();
-}
-
-class _VolumnSliderState extends State<VolumnSlider> {
-  double _volumn;
-
-  @override
-  initState() {
-    super.initState();
-    _volumn = widget.initialVolumn;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RowSettingItem(
-      textLabel: "Volumn",
-      settingWidget: Slider(
-        min: 0.1,
-        max: 2.0,
-        onChanged: (double value) {
-          setState(() {
-            _volumn = value;
-            widget.update(volumn: value);
-          });
-        },
-        value: _volumn,
       ),
     );
   }
@@ -183,8 +79,15 @@ class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
       textLabel: "Radio buttons",
       settingWidget: Flexible(
         child: Column(
-          children: <Widget>[
-            PlayingModeOption(
+          children: getPlayModeItems(_audioPlayMode, (AudioPlayMode value) {
+            setState(() {
+              _audioPlayMode = value;
+              widget.update(audioPlayMode: value);
+            });
+          }),
+          /*
+          <Widget>[
+            PlayModeItem(
                 value: AudioPlayMode.LOOP,
                 groupValue: _audioPlayMode,
                 onChanged: (AudioPlayMode value) {
@@ -193,7 +96,7 @@ class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
                     widget.update(audioPlayMode: value);
                   });
                 }),
-            PlayingModeOption(
+            PlayModeItem(
                 value: AudioPlayMode.STOP,
                 groupValue: _audioPlayMode,
                 onChanged: (AudioPlayMode value) {
@@ -202,7 +105,7 @@ class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
                     widget.update(audioPlayMode: value);
                   });
                 }),
-            PlayingModeOption(
+            PlayModeItem(
                 value: AudioPlayMode.RECORD_ON_COMPLETE,
                 groupValue: _audioPlayMode,
                 onChanged: (AudioPlayMode value) {
@@ -212,51 +115,9 @@ class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
                   });
                 }),
           ],
+          */
         ),
       ),
-    );
-  }
-}
-
-class PlayingModeOption extends StatelessWidget {
-  final AudioPlayMode value;
-  final AudioPlayMode groupValue;
-  final Function onChanged;
-
-  PlayingModeOption({
-    @required this.value,
-    @required this.groupValue,
-    @required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return RadioListTile<AudioPlayMode>(
-      title: Text(value.description),
-      value: value,
-      groupValue: groupValue,
-      onChanged: onChanged,
-    );
-  }
-}
-
-class RowSettingItem extends StatelessWidget {
-  final String textLabel;
-  final Widget settingWidget;
-  RowSettingItem({
-    @required this.textLabel,
-    @required this.settingWidget,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          child: Text(textLabel),
-        ),
-        settingWidget,
-      ],
     );
   }
 }
