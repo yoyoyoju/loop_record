@@ -37,10 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 widget.updateDarkMode(changed);
               },
             ),
-            ExampleSlider(),
-            VolumnSlider(
+            PlayRateSlider(
               update: widget.updateAudioSettings,
-              initialVolumn: widget.audioSettings.volumn,
+              initialPlayRate: widget.audioSettings.playbackRate,
             ),
             AudioPlayModeRadio(
               update: widget.updateAudioSettings,
@@ -72,17 +71,53 @@ class DarkModeSwitch extends StatelessWidget {
   }
 }
 
-class ExampleSlider extends StatelessWidget {
+class PlayRateSlider extends StatefulWidget {
+  final double initialPlayRate;
+  final Function update;
+
+  PlayRateSlider({
+    @required this.initialPlayRate,
+    @required this.update,
+  });
+
+  @override
+  _PlayRateSliderState createState() => _PlayRateSliderState();
+}
+
+class _PlayRateSliderState extends State<PlayRateSlider> {
+  double _playRate;
+
+  @override
+  initState() {
+    super.initState();
+    _playRate = widget.initialPlayRate;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return RowSettingItem(
-      textLabel: "Volumn",
-      settingWidget: Slider(
-        min: 0.1,
-        max: 2.0,
-        onChanged: (double value) {},
-        value: 1.0,
-      ),
+    return Column(
+      children: <Widget>[
+        RowSettingItem(
+          textLabel: "Audio Playback Rate",
+          settingWidget: Slider(
+            min: 0.1,
+            max: 2.0,
+            onChanged: (double value) {
+              setState(() {
+                _playRate = value;
+                widget.update(playbackRate: value);
+              });
+            },
+            value: _playRate,
+          ),
+        ),
+        RaisedButton(
+            child: Text("Set default playback rate"),
+            onPressed: () => setState(() {
+                  _playRate = 1.0;
+                  widget.update(playbackRate: 1.0);
+                })),
+      ],
     );
   }
 }
@@ -90,12 +125,10 @@ class ExampleSlider extends StatelessWidget {
 class VolumnSlider extends StatefulWidget {
   final double initialVolumn;
   final Function update;
-
   VolumnSlider({
     @required this.initialVolumn,
     @required this.update,
   });
-
   @override
   _VolumnSliderState createState() => _VolumnSliderState();
 }

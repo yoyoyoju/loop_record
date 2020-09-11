@@ -241,13 +241,16 @@ class AudioUnitImpl implements AudioUnit {
   // AudioPlayer
   Future<int> _playAudio() async {
     _audioPlayer = AudioPlayer();
-    final result =
-        await _audioPlayer.play(_currentRecording.path, isLocal: true);
+    await _updateReleaseMode();
+    final result = _audioPlayer.play(
+      _currentRecording.path,
+      isLocal: true,
+    );
+    _updateAudioSettings();
     _playerState = _audioPlayer?.state;
-    var updateStatue = _updateStatus();
-    await _updateAudioSettings();
-    await updateStatue;
-    return result;
+
+    await _updateStatus();
+    return await result;
   }
 
   Future<int> _stopAudio() async {
@@ -266,21 +269,26 @@ class AudioUnitImpl implements AudioUnit {
   }
 
   Future<int> _resumeAudio() async {
+    await _updateReleaseMode();
+    _updateAudioSettings();
     final result = await _audioPlayer?.resume() ?? -1;
     _playerState = _audioPlayer?.state;
     var updateStatue = _updateStatus();
-    await _updateAudioSettings();
     await updateStatue;
     return result;
   }
 
-  Future _updateAudioSettings() async {
-    _audioPlayer?.setVolume(audioSettings.volumn); // Volume does not work...
-    _audioPlayer?.setPlaybackRate(playbackRate: audioSettings.playbackRate);
-    await _updateReleaseMode();
+  void _updateAudioSettings() {
+    // This should be called while playing
+//    _audioPlayer?.setVolume(audioSettings.volumn); // Volume does not work...
+    final rate = audioSettings.playbackRate;
+    if (rate != 1.0) {
+      _audioPlayer?.setPlaybackRate(playbackRate: rate);
+    }
   }
 
   Future _updateReleaseMode() async {
+    // This should be called before playing
     switch (audioSettings.audioPlayMode) {
       case AudioPlayMode.LOOP:
         await _audioPlayer.setReleaseMode(ReleaseMode.LOOP);
