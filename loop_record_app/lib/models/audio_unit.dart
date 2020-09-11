@@ -242,7 +242,7 @@ class AudioUnitImpl implements AudioUnit {
   Future<int> _playAudio() async {
     _audioPlayer = AudioPlayer();
     await _updateReleaseMode();
-    final result = _audioPlayer.play(
+    final result = await _audioPlayer.play(
       _currentRecording.path,
       isLocal: true,
     );
@@ -250,7 +250,7 @@ class AudioUnitImpl implements AudioUnit {
     _playerState = _audioPlayer?.state;
 
     await _updateStatus();
-    return await result;
+    return result;
   }
 
   Future<int> _stopAudio() async {
