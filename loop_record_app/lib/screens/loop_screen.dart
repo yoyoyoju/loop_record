@@ -73,8 +73,6 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
     audioUnit.pause();
     Navigator.pushNamed(context, LoopRecordRoutes.settings)
         .whenComplete(onResume);
-    // TODO should update the audio settings here?
-    // OR use observer?
   }
 
   void onResume() {
@@ -91,8 +89,10 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   _initAudio() async {
     // Pass callback whenComplete
     audioUnit = AudioUnitImpl(
-        localFileSystem: widget.localFileSystem,
-        audioSettings: widget.audioSettings);
+      localFileSystem: widget.localFileSystem,
+      audioSettings: widget.audioSettings,
+      callbackOnPlayComplete: () => updateTab(LoopTab.playing),
+    );
     final result = await audioUnit.init();
     setState(() {
       _audioUnitHealth = result;

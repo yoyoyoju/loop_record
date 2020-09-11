@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
+import 'package:meta/meta.dart';
 
 import 'package:file/file.dart';
 import 'package:file/local.dart';
@@ -8,47 +9,6 @@ import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:loop_record_app/models/audio_settings.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:path_provider/path_provider.dart';
-
-// Move the enum to models
-
-enum AudioUnitStatus {
-  RECORDING, // Recording, !playing or null
-  PLAYING, // playing, ! recording or null
-  RECORD_PAUSED, // one of them paused
-  PLAY_PAUSED,
-  IDLE, // not recording, not playing or null
-  ERROR
-}
-
-AudioUnitStatus getAudioUnitStatus(
-    RecordingStatus recorderStatus, AudioPlayerState playerStatus) {
-  if (recorderStatus == RecordingStatus.Recording &&
-      (playerStatus == null || playerStatus != AudioPlayerState.PLAYING)) {
-    return AudioUnitStatus.RECORDING;
-  }
-  if (playerStatus == AudioPlayerState.PLAYING &&
-      (recorderStatus == null || recorderStatus != RecordingStatus.Recording)) {
-    return AudioUnitStatus.PLAYING;
-  }
-  if (recorderStatus == RecordingStatus.Paused &&
-      (playerStatus == null || playerStatus != AudioPlayerState.PLAYING)) {
-    return AudioUnitStatus.RECORD_PAUSED;
-  }
-  if (playerStatus == AudioPlayerState.PAUSED &&
-      (recorderStatus == null || recorderStatus != RecordingStatus.Recording)) {
-    return AudioUnitStatus.PLAY_PAUSED;
-  }
-  if ((playerStatus == null ||
-          playerStatus == AudioPlayerState.STOPPED ||
-          playerStatus == AudioPlayerState.COMPLETED) &&
-      (recorderStatus == null ||
-          recorderStatus == RecordingStatus.Unset ||
-          recorderStatus == RecordingStatus.Stopped ||
-          recorderStatus == RecordingStatus.Initialized)) {
-    return AudioUnitStatus.IDLE;
-  }
-  return AudioUnitStatus.ERROR;
-}
 
 class AudioUnitImpl implements AudioUnit {
   // Player/Recorder
@@ -66,6 +26,8 @@ class AudioUnitImpl implements AudioUnit {
 
   // AudioSettings
   AudioSettings audioSettings;
+  StreamSubscription _playOnCompleteSubscription;
+  final Function callbackOnPlayComplete;
 
   @override
   AudioUnitStatus get status => _audioUnitStatus;
@@ -74,7 +36,11 @@ class AudioUnitImpl implements AudioUnit {
       _audioUnitStatus == AudioUnitStatus.RECORD_PAUSED ||
       _audioUnitStatus == AudioUnitStatus.PLAY_PAUSED;
 
-  AudioUnitImpl({this.localFileSystem, this.audioSettings});
+  AudioUnitImpl({
+    this.localFileSystem,
+    @required this.audioSettings,
+    @required this.callbackOnPlayComplete,
+  });
 
   Future _updateStatus() async {
     // It mutate the statuses of audio Units
@@ -225,7 +191,6 @@ class AudioUnitImpl implements AudioUnit {
 
   Future<int> _delete(String filepath) async {
     try {
-      // TODO: handle io FileNotFoundException
       final file = io.File(filepath);
       if (file.existsSync()) {
         await file.delete();
@@ -276,11 +241,12 @@ class AudioUnitImpl implements AudioUnit {
   // AudioPlayer
   Future<int> _playAudio() async {
     _audioPlayer = AudioPlayer();
-    await _audioPlayer.setReleaseMode(ReleaseMode.LOOP);
     final result =
         await _audioPlayer.play(_currentRecording.path, isLocal: true);
     _playerState = _audioPlayer?.state;
-    await _updateStatus();
+    var updateStatue = _updateStatus();
+    await _updateAudioSettings();
+    await updateStatue;
     return result;
   }
 
@@ -302,27 +268,88 @@ class AudioUnitImpl implements AudioUnit {
   Future<int> _resumeAudio() async {
     final result = await _audioPlayer?.resume() ?? -1;
     _playerState = _audioPlayer?.state;
-    await _updateStatus();
+    var updateStatue = _updateStatus();
+    await _updateAudioSettings();
+    await updateStatue;
     return result;
+  }
+
+  Future _updateAudioSettings() async {
+    _audioPlayer?.setVolume(audioSettings.volumn); // Volume does not work...
+    _audioPlayer?.setPlaybackRate(playbackRate: audioSettings.playbackRate);
+    await _updateReleaseMode();
+  }
+
+  Future _updateReleaseMode() async {
+    switch (audioSettings.audioPlayMode) {
+      case AudioPlayMode.LOOP:
+        await _audioPlayer.setReleaseMode(ReleaseMode.LOOP);
+        _playOnCompleteSubscription?.cancel();
+        break;
+      case AudioPlayMode.STOP:
+        await _audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
+        _playOnCompleteSubscription?.cancel();
+        break;
+      case AudioPlayMode.RECORD_ON_COMPLETE:
+        await _audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
+        _playOnCompleteSubscription =
+            _audioPlayer.onPlayerCompletion.listen((event) {
+          callbackOnPlayComplete();
+        });
+        break;
+    }
   }
 }
 
 abstract class AudioUnit {
   AudioUnitStatus get status;
   bool get isPaused;
-
   Future<AudioUnitHealth> init();
-
   Future<bool> record();
-
   Future<bool> play();
-
   Future<bool> pause();
-
   Future<bool> resume();
-
   Future<bool> stop();
-
   // Add Stop for both
   void release();
+}
+
+// Move the enum to models
+enum AudioUnitStatus {
+  RECORDING, // Recording, !playing or null
+  PLAYING, // playing, ! recording or null
+  RECORD_PAUSED, // one of them paused
+  PLAY_PAUSED,
+  IDLE, // not recording, not playing or null
+  ERROR
+}
+
+AudioUnitStatus getAudioUnitStatus(
+    RecordingStatus recorderStatus, AudioPlayerState playerStatus) {
+  if (recorderStatus == RecordingStatus.Recording &&
+      (playerStatus == null || playerStatus != AudioPlayerState.PLAYING)) {
+    return AudioUnitStatus.RECORDING;
+  }
+  if (playerStatus == AudioPlayerState.PLAYING &&
+      (recorderStatus == null || recorderStatus != RecordingStatus.Recording)) {
+    return AudioUnitStatus.PLAYING;
+  }
+  if (recorderStatus == RecordingStatus.Paused &&
+      (playerStatus == null || playerStatus != AudioPlayerState.PLAYING)) {
+    return AudioUnitStatus.RECORD_PAUSED;
+  }
+  if (playerStatus == AudioPlayerState.PAUSED &&
+      (recorderStatus == null || recorderStatus != RecordingStatus.Recording)) {
+    return AudioUnitStatus.PLAY_PAUSED;
+  }
+  if ((playerStatus == null ||
+          playerStatus == AudioPlayerState.STOPPED ||
+          playerStatus == AudioPlayerState.COMPLETED) &&
+      (recorderStatus == null ||
+          recorderStatus == RecordingStatus.Unset ||
+          recorderStatus == RecordingStatus.Stopped ||
+          recorderStatus == RecordingStatus.Initialized)) {
+    return AudioUnitStatus.IDLE;
+  }
+  return AudioUnitStatus.ERROR;
 }
