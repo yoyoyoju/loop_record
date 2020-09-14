@@ -65,14 +65,25 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
     }
 
     return activeTab == LoopTab.recording
-        ? RecordingTab(updateTab: updateTab)
-        : PlayingTab(updateTab: updateTab);
+        ? RecordingTab(
+            updateTab: updateTab,
+            onStopBtn: onStopBtn,
+          )
+        : PlayingTab(
+            updateTab: updateTab,
+            onStopBtn: onStopBtn,
+          );
   }
 
   void _goToSettings() {
     audioUnit.pause();
     Navigator.pushNamed(context, LoopRecordRoutes.settings)
         .whenComplete(onResume);
+  }
+
+  void onStopBtn() {
+    audioUnit.stop();
+    Navigator.pop(context);
   }
 
   void onResume() {

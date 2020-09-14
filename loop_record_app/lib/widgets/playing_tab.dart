@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app/models/enums.dart';
 
 class PlayingTab extends StatefulWidget {
-  final updateTab;
+  final Function updateTab;
+  final Function onStopBtn;
 
-  PlayingTab({@required this.updateTab});
+  PlayingTab({
+    @required this.updateTab,
+    @required this.onStopBtn,
+  });
 
   @override
   _PlayingTabState createState() => _PlayingTabState();
@@ -21,6 +25,9 @@ class _PlayingTabState extends State<PlayingTab> {
         GestureDetector(
           onTap: () => widget.updateTab(_currentTab),
         ),
+        RaisedButton(
+          onPressed: () => widget.onStopBtn(),
+        )
       ],
     );
   }
