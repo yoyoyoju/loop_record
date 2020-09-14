@@ -176,3 +176,37 @@ List<Widget> getPlayModeItems(
     );
   }).toList();
 }
+
+class AudioPlayModeRadio extends StatefulWidget {
+  final Function update;
+  final AudioPlayMode currentMode;
+  AudioPlayModeRadio({@required this.update, this.currentMode});
+  @override
+  _AudioPlayModeRadioState createState() => _AudioPlayModeRadioState();
+}
+
+class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
+  AudioPlayMode _audioPlayMode;
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayMode = widget.currentMode ?? AudioPlayMode.LOOP;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RowSettingItem(
+      textLabel: "Radio buttons",
+      settingWidget: Flexible(
+        child: Column(
+          children: getPlayModeItems(_audioPlayMode, (AudioPlayMode value) {
+            setState(() {
+              _audioPlayMode = value;
+              widget.update(audioPlayMode: value);
+            });
+          }),
+        ),
+      ),
+    );
+  }
+}
