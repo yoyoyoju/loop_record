@@ -14,7 +14,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+//      backgroundColor: Color(0xff191637),
       appBar: AppBar(
+//        backgroundColor: Color(0xff2c2a44),
         title: Text('Change the title'),
         actions: [
           ExtraActionsButton(onSelected: (action) {
