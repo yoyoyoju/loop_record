@@ -5,6 +5,7 @@ class Strings {
   static const String SETTINGS_PLAYRATE_DEFAULT = "Set default playback rate";
   static const String SETTINGS_PLAYRATE_COMMENT =
       "When the playrate is set other than default, the audio might have noisy start.";
+  static const String SETTINGS_PLAYMODE = "Play mode";
 
   static const String TITLE = "Record Play Repeat";
   static const String RECORDING_TEXT = "recording";

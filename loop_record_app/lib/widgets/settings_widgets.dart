@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loop_record_app/strings.dart';
 import 'package:loop_record_app/models/enums.dart';
 
+const double SettingsDefaultPadding = 16.0;
+
 class DarkModeSwitch extends StatelessWidget {
   final bool value;
   final Function onChanged;
@@ -59,6 +61,9 @@ class _PlayRateSliderState extends State<PlayRateSlider> {
           ),
         ),
         Text(Strings.SETTINGS_PLAYRATE_COMMENT),
+        SizedBox(
+          height: SettingsDefaultPadding,
+        ),
         RaisedButton(
             child: Text(Strings.SETTINGS_PLAYRATE_DEFAULT),
             onPressed: () => setState(() {
@@ -80,10 +85,10 @@ class RowSettingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+//      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          child: Text(textLabel),
+          child: SubtitleText(textLabel),
         ),
         settingWidget,
       ],
@@ -195,17 +200,55 @@ class _AudioPlayModeRadioState extends State<AudioPlayModeRadio> {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SubtitleText(Strings.SETTINGS_PLAYMODE),
+        ...getPlayModeItems(_audioPlayMode, (AudioPlayMode value) {
+          setState(() {
+            _audioPlayMode = value;
+            widget.update(audioPlayMode: value);
+          });
+        }),
+      ],
+    );
+    /*
     return RowSettingItem(
-      textLabel: "Radio buttons",
+      textLabel: strings.SETTINGS_PLAYMODE,
       settingWidget: Flexible(
         child: Column(
-          children: getPlayModeItems(_audioPlayMode, (AudioPlayMode value) {
+          children:
+          getPlayModeItems(_audioPlayMode, (AudioPlayMode value) {
             setState(() {
               _audioPlayMode = value;
               widget.update(audioPlayMode: value);
             });
           }),
+
+
         ),
+      ),
+    );
+    */
+  }
+}
+
+class SubtitleText extends StatelessWidget {
+  final String text;
+
+  SubtitleText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: SettingsDefaultPadding,
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.subtitle1.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
