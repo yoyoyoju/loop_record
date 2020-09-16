@@ -58,6 +58,7 @@ class _PlayRateSliderState extends State<PlayRateSlider> {
               });
             },
             value: _playRate,
+            label: "$_playRate",
           ),
         ),
         Text(Strings.SETTINGS_PLAYRATE_COMMENT),
@@ -85,7 +86,7 @@ class RowSettingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-//      crossAxisAlignment: CrossAxisAlignment.start,
+      //crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Expanded(
           child: SubtitleText(textLabel),
