@@ -1,25 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:loop_record_app/strings.dart';
 
-class TwoWidgets extends StatelessWidget {
-  TwoWidgets();
+class InstructionWidget extends StatelessWidget {
+  final Widget one;
+  final String instructionText;
+
+  InstructionWidget(this.one, this.instructionText);
 
   @override
   Widget build(BuildContext context) {
     var orientation = MediaQuery.of(context).orientation;
     var direction =
-        orientation == Orientation.landscape ? Axis.vertical : Axis.horizontal;
+        orientation == Orientation.portrait ? Axis.vertical : Axis.horizontal;
+    var textAlignment = orientation == Orientation.portrait
+        ? Alignment.topCenter
+        : Alignment.center;
     return Container(
       width: double.infinity,
       height: double.infinity,
-      child: Wrap(
+      child: Flex(
         direction: direction,
-        runAlignment: WrapAlignment.spaceAround,
+//        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          CircleDecoratedText(Strings.RECORDING_TEXT),
-          Align(
-            alignment: Alignment.center,
-            child: Text("Tab to Play"),
+          Flexible(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: one,
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Align(
+              alignment: textAlignment,
+              child: Text(
+                instructionText,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
           ),
         ],
       ),

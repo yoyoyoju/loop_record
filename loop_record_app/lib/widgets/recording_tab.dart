@@ -23,7 +23,10 @@ class _RecordingTabState extends State<RecordingTab> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        TwoWidgets(),
+        InstructionWidget(
+          CircleDecoratedText(Strings.RECORDING_TEXT),
+          Strings.RECORDING_INSTRUCTIOIN,
+        ),
         GestureDetector(
           onTap: () => widget.updateTab(_currentTab),
         ),
