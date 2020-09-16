@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loop_record_app/models/enums.dart';
 import 'package:loop_record_app/strings.dart';
+import 'package:loop_record_app/widgets/loop_widgets.dart';
 
 class RecordingTab extends StatefulWidget {
   final Function updateTab;
@@ -22,42 +23,17 @@ class _RecordingTabState extends State<RecordingTab> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        RecordPaint(),
-        Text(Strings.RECORDING_TEXT),
+        TwoWidgets(),
         GestureDetector(
           onTap: () => widget.updateTab(_currentTab),
         ),
-        RaisedButton(
-          child: Text(Strings.STOP_BUTTON),
-          onPressed: () => widget.onStopBtn(),
-        )
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: StopButton(
+            () => widget.onStopBtn(),
+          ),
+        ),
       ],
     );
   }
-}
-
-class RecordPaint extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 400,
-      height: 400,
-      child: CustomPaint(
-        painter: CirclePainter(),
-      ),
-    );
-  }
-}
-
-class CirclePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint1 = Paint()
-      ..color = Color(0xff63aa65)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(200, 200), 100, paint1);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
