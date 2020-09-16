@@ -58,6 +58,13 @@ class LoopRecordTheme {
         thumbColor: _lightIconColor,
       ),
       buttonColor: _lightPrimaryColor,
+      cardTheme: CardTheme(
+        color: _lightIconColor.withOpacity(.5),
+        elevation: 0.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
     );
 
     /*
@@ -91,6 +98,13 @@ class LoopRecordTheme {
         inactiveTrackColor: Colors.grey,
       ),
       buttonColor: darken(_darkIconColor, .3),
+      cardTheme: CardTheme(
+        color: _darkIconColor.withOpacity(.3),
+        elevation: 0.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
     );
     /*
            ThemeData.dark().copyWith(

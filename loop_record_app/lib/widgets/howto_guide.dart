@@ -12,11 +12,31 @@ class HowtoGuide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      HowtoCard(),
+      HowtoDiv(),
       GestureDetector(
         onTap: this.onTap,
       ),
     ]);
+  }
+}
+
+class HowtoDiv extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 40.0),
+          HowtoCard(),
+          SizedBox(height: 8.0),
+          Text(
+            Strings.HOW_START,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: 40.0),
+        ],
+      ),
+    );
   }
 }
 
@@ -45,6 +65,7 @@ class HowtoText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: texts
           .map(
             (text) => Padding(
@@ -52,7 +73,8 @@ class HowtoText extends StatelessWidget {
                 vertical: padding,
               ),
               child: Text(
-                text,
+                "•  " + text,
+                style: Theme.of(context).accentTextTheme.headline6,
               ),
             ),
           )

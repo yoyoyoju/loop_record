@@ -3,6 +3,7 @@ import 'package:loop_record_app_core/loop_record_app_core.dart';
 import 'package:loop_record_app/widgets/extra_actions_button.dart';
 import 'package:loop_record_app/widgets/howto_guide.dart';
 import 'package:loop_record_app/models/enums.dart';
+import 'package:loop_record_app/strings.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen() : super(key: LoopRecordKeys.homeScreen);
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //      backgroundColor: Color(0xff191637),
       appBar: AppBar(
 //        backgroundColor: Color(0xff2c2a44),
-        title: Text('Change the title'),
+        title: Text(Strings.TITLE),
         actions: [
           ExtraActionsButton(onSelected: (action) {
             if (action == ExtraAction.settings) {

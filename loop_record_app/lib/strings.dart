@@ -17,11 +17,9 @@ class Strings {
   static const String STOP_BUTTON = "STOP";
 
   // home screen
-  static const String HOW_TITLE = "HOW TO:";
   static const List<String> HOW_TEXT = [
-    "Tab screen to record",
-    "Tab again to stop recording and start play back",
-    "Tab again to stop play back and start to record",
-    "Tab on STOP button to stop",
+    "Tab the screen to toggle between record and play",
+    "Tab on the STOP button to stop recording/playing",
   ];
+  static const String HOW_START = "Tab to start";
 }
