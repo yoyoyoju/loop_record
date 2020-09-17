@@ -50,6 +50,7 @@ class _RecordAppState extends State<RecordApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'demo',
       theme: LoopRecordTheme.theme,
       darkTheme: LoopRecordTheme.dark,

@@ -8,6 +8,7 @@ import 'package:loop_record_app/widgets/extra_actions_button.dart';
 import 'package:loop_record_app/widgets/recording_tab.dart';
 import 'package:loop_record_app/widgets/playing_tab.dart';
 import 'package:loop_record_app/widgets/audio_error_tab.dart';
+import 'package:loop_record_app/strings.dart';
 
 class LoopScreen extends StatefulWidget {
   final LocalFileSystem localFileSystem;
@@ -40,8 +41,8 @@ class _LoopScreenState extends State<LoopScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '${widget.audioSettings.audioPlayMode.description}'), //TODO use localization
+        title: Text(Strings.TITLE),
+//            '${widget.audioSettings.audioPlayMode.description}'), //TODO use localization
         actions: [
           ExtraActionsButton(
             onSelected: (action) {
